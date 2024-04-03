@@ -21,10 +21,10 @@ const Footer = () => {
 						<Link className="font-light text-xs mb-2" href="/not-found">
 							<p>Download</p>
 						</Link>
-						<a className="font-light text-xs mb-2" href="/not-found">
+						<a className="font-light text-xs mb-2" href="/contact">
 							<p>Feedback</p>
 						</a>
-						<a className="font-light text-xs mb-2" href="/not-found">
+						<a className="font-light text-xs mb-2" href="/contact">
 							<p>Feedback als Unternehmen</p>
 						</a>
 					</div>

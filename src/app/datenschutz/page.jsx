@@ -13,12 +13,17 @@ export default function Datenschutzerklaerung() {
 			<main className="text-white mt-24">
 				<section className="max-w-[800px]">
 					<h1 className="text-3xl md:text-5xl mb-5">Datenschutzerklärung</h1>
-					<p className="leading-6 my-2 text-gray-300 mb-5">Hier wird genauer erläutert, welche Daten von der App erhoben und wie diese verarbeitet werden. Wenn nach dem Lesen noch Fragen offen bleiben, stehen wir mit unserem Support Ihnen zur Verfügung.</p>
+					<h3 className="text-2xl">Datenschutzinformation für die Webseiten und Apps der Clubbery GmbH</h3>
+					<p className="leading-6 my-2 text-gray-300 mb-5">
+						Diese Datenschutzinformation informiert über die Verarbeitung Ihrer personenbezogenen Daten bei Besuch und Nutzung der Webseiten und Apps der Clubbery GmbH und bezüglich unserer Marketingmaßnahmen auf unseren eigenen Webseiten sowie auf Webseiten Dritter und in sozialen
+						Netzwerken nach der Datenschutz-Grundverordnung (im Folgenden „DS-GVO“).
+					</p>
 				</section>
 
 				<section className="flex flex-col gap-8 mb-4 max-w-[850px]">
 					<div className="flex flex-col gap-[0.8rem]">
-						<h3 className="text-2xl">Grundsätzlich erfasste Informationen</h3>
+						<h3 className="text-2xl">1 Anwendungsbereich, verantwortliche Stelle und Definitionen</h3>
+						<h2 className="text-xl">1.1 Anwendungsbereich dieser Datenschutzinformation</h2>
 						<p className="leading-6 mt-2 text-gray-300">Ein Nutzerkonto wird zur Nutzung der App nicht benötigt. Wenn kein Konto erstellt wird werden keine Personenbezogenen Daten gespeichert.</p>
 						<ol type="1" className="grid grid-flow-row gap-[12px] ml-5">
 							<li className="leading-6 text-gray-300 list-decimal">Name (Kann auch ein Pseudonym sein)</li>

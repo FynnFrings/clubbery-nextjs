@@ -108,7 +108,7 @@ const ContactForm = () => {
 									onChange={(e) => updateEvent({ message: e.target.value })}
 								/>
 							</div>
-							<button className="bg-[#FAC520] text-black w-[80%] py-2 rounded-xl font-medium text-2xl hover:scale-95 transition duration-200" type="submit">
+							<button className="bg-[#CC7503] text-[#F0FDF4] w-[80%] py-2 rounded-xl font-medium text-2xl hover:scale-95 transition duration-200" type="submit">
 								Absenden
 							</button>
 						</form>

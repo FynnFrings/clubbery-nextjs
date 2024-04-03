@@ -1,5 +1,5 @@
 "use client";
-import useMobileDetect from "@/helpers/detetctUseOS";
+// import useMobileDetect from "@/helpers/detetctUseOS";
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
@@ -12,10 +12,9 @@ const Header = () => {
 	const handleOnClick = () => {
 		setMenu(!menu);
 	};
-	const device = useMobileDetect();
-	// console.log("🚀 ~ Header ~ device:", device.isDesktop());
+	// const device = useMobileDetect();
 	return (
-		<div className="sticky top-0">
+		<header className="sticky top-0 z-50">
 			<div className="bg-[#181923] flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10">
 				<Link href="/">
 					<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={45} height={50} />
@@ -30,8 +29,10 @@ const Header = () => {
 					<li>
 						<Link href="/not-found">FAQ</Link>
 					</li>
-					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
-						<Link href="/not-found">Download Clubbery</Link>
+					<li className="hover:scale-95 transition duration-200">
+						<Link href="/not-found" className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
+							Download Clubbery
+						</Link>
 					</li>
 				</ul>
 				<div className="block md:hidden">
@@ -40,7 +41,7 @@ const Header = () => {
 					</button>
 				</div>
 			</div>
-			<div className={`block md:hidden ${menu ? "translate-y-0" : "-translate-y-[150%]"} bg-[#181923] w-full pb-5 transition ease-in-out shadow-lg`}>
+			<div className={`absolute md:hidden ${menu ? "translate-y-0" : "-translate-y-[200%]"} bg-[#181923] w-full pb-5 transition ease-in-out shadow-lg -z-10`}>
 				<ul className="flex flex-col gap-y-3 items-center list-none gap-x-12 text-base text-white">
 					<li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
@@ -64,7 +65,7 @@ const Header = () => {
 					</li>
 				</ul>
 			</div>
-		</div>
+		</header>
 	);
 };
 
