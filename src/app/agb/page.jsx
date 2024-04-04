@@ -172,13 +172,66 @@ export default function AGB() {
 							<li className="leading-6 mt-2 text-gray-300">Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)</li>
 							<li className="leading-6 mt-2 text-gray-300">Datum</li>
 						</ul>
+						<p className="leading-6 mt-2 text-gray-300">(*) Unzutreffendes streichen.</p>
+						<p className="leading-6 mt-2 text-gray-300">Ende der Widerrufsbelehrung und des Muster-Widerrufsformulars</p>
+						<p className="leading-6 mt-2 text-gray-300">Im Fall des Widerrufs durch den Kunden gilt das Folgende:</p>
+						<p className="leading-6 mt-2 text-gray-300">
+							MDie Clubbery GmbH kann die Rückzahlung verweigern, bis die Clubbery GmbH die Waren wieder zurückerhalten hat oder bis der Kunde den Nachweis erbracht hat, dass er die Waren zurückgesandt hat, je nachdem, welches der frühere Zeitpunkt ist.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Der Kunde hat die Waren unverzüglich und in jedem Fall spätestens binnen vierzehn Tagen ab dem Tag, an dem er die Clubbery GmbH über den Widerruf dieses Vertrags unterrichten, an die Clubbery GmbH zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn der Kunde die
+							Waren vor Ablauf der Frist von vierzehn Tagen absendet. Der Kunde trägt die unmittelbaren Kosten der Rücksendung der Waren. Der Kunde muss für einen etwaigen Wertverlust der Waren aufkommen, wenn dieser Wertverlust auf einen zur Prüfung der Beschaffenheit, Eigenschaften
+							und Funktionsweise der Waren nicht notwendigen Umgang mit ihnen zurückzuführen ist.
+						</p>
+					</div>
+					<div className="flex flex-col gap-[0.8rem]">
+						<h3 className="text-2xl">VI. Eigentumsvorbehalt; Aufrechnung; Zurückbehaltungsrecht beim Rechnungskauf</h3>
+						<p className="leading-6 mt-2 text-gray-300">
+							Bei einem Verbraucher behält die Clubbery GmbH sich das Eigentum an der Kaufsache bis zur vollständigen Zahlung des Rechnungsbetrags vor. Bei personalisierten Tickets steht die Übertragung des sich aus dem Ticket ergebenden Anspruchs unter der Bedingung der vollständigen
+							Zahlung des Rechnungsbetrags. Die entsprechenden Sicherungsrechte sind auf Dritte übertragbar.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Ist der Kunde Unternehmer in Ausübung seiner gewerblichen oder selbständigen beruflichen Tätigkeit, eine juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen, behält die Clubbery GmbH sich das Eigentum an der Kaufsache bis zum Ausgleich
+							aller noch offenen Forderungen aus der Geschäftsverbindung mit dem Kunden vor. Bei personalisierten Tickets steht die Übertragung des sich aus dem Ticket ergebenden Anspruchs unter der Bedingung des Ausgleichs aller noch offenen Forderungen aus der Geschäftsverbindung mit
+							dem Kunden. Die entsprechenden Sicherungsrechte sind auf Dritte übertragbar.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Ein Recht zur Aufrechnung steht dem Kunden nur zu, wenn dessen Gegenansprüche rechtskräftig festgestellt oder von der Clubbery GmbH unbestritten oder anerkannt sind. Außerdem hat der Kunde ein Zurückbehaltungsrecht nur, wenn und soweit dessen Gegenanspruch auf dem
+							gleichen Vertragsverhältnis beruht.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">Befindet sich der Kunde gegenüber der Clubbery GmbH mit irgendwelchen Zahlungsverpflichtungen im Verzug, so werden sämtliche bestehende Forderungen sofort fällig.</p>
+					</div>
+					<div className="flex flex-col gap-[0.8rem]">
+						<h3 className="text-2xl">VII. Haftungsbeschränkungen, Ausschluss des Rücktritts bei bestimmten Pflichtverletzungen</h3>
+						<p className="leading-6 mt-2 text-gray-300">
+							Die Clubbery GmbH haftet in jedem Fall unbeschränkt nach dem Produkthaftungsgesetz, für vorsätzlich oder grob fahrlässig verursachte Schäden, bei arglistigem Verschweigen von Mängeln, sowie für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Auch
+							die Haftung für Schäden aus der Verletzung einer Garantie ist unbeschränkt.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">Bei Verletzung wesentlicher Vertragspflichten (sog. Kardinalpflichten), die nur auf einfacher Fahrlässigkeit beruht, haftet die Clubbery GmbH beschränkt auf den Ersatz des vorhersehbaren, vertragstypischen Schadens.</p>
+						<p className="leading-6 mt-2 text-gray-300">Außer in den in den Absätzen 1 und 2 genannten Fällen haftet die Clubbery GmbH nicht für Schäden, die durch einfache Fahrlässigkeit verursacht wurden.</p>
+						<p className="leading-6 mt-2 text-gray-300">Das Recht des Kunden, sich wegen einer nicht vom Veranstalter oder der Clubbery GmbH zu vertretenden, nicht in einem Mangel der Ware bestehenden Pflichtverletzung vom Vertrag zu lösen, ist ausgeschlossen.</p>
+						<p className="leading-6 mt-2 text-gray-300">Soweit die Haftung der Clubbery GmbH nach den vorstehenden Absätzen ausgeschlossen oder beschränkt ist, gilt dies auch für die Haftung ihrer Erfüllungs- und Verrichtungsgehilfen.</p>
+					</div>
+					<div className="flex flex-col gap-[0.8rem]">
+						<h3 className="text-2xl">VIII. Schlussklauseln</h3>
+						<p className="leading-6 mt-2 text-gray-300">
+							Es gilt ausschließlich das Recht der Bundesrepublik Deutschland. Unabhängig von der vorstehenden Regelung zur Rechtswahl können sich Verbraucher mit gewöhnlichem Aufenthalt außerhalb der Bundesrepublik Deutschland stets auch auf das Recht des Staates berufen, in dem sie
+							ihren Wohnsitz haben.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">Alleiniger Erfüllungsort für Lieferung, Leistung und Zahlung ist Aachen, sofern der Kunde Unternehmer i.S.v. § 14 BGB ist. </p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Ist der Kunde Kaufmann, so ist ausschließlicher (auch internationaler) Gerichtsstand für alle sich aus dem Vertragsverhältnis unmittelbar oder mittelbar ergebenen Streitigkeiten Aachen. Dies gilt im Falle von grenzüberschreitenden Verträgen auch für Nichtkaufleute. Die
+							Clubbery GmbH behält sich das Recht vor, auch jedes andere international zuständige Gericht anzurufen.
+						</p>
+						<p className="leading-6 mt-2 text-gray-300">Die Europäische Kommission stellt ab dem 15.02.2016 hier eine Plattform zur Online-Streitbeilegung bereit. Die E-Mailadresse der Clubbery GmbH lautet support@clubbery.com. </p>
+						<p className="leading-6 mt-2 text-gray-300">Die Clubbery GmbH ist nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 					</div>
 					<div className="flex flex-col gap-[0.8rem]">
 						<h3 className="text-2xl">Datenschutz</h3>
 						<p className="leading-6 mt-2 text-gray-300">
 							Informationen über Art, Umfang, Ort und Zweck der Erhebung, Verarbeitung und Nutzung personenbezogenen Daten durch uns sowie über die Ihnen zustehenden Rechte entnehmen Sie bitte unserer Datenschutzerklärung.
 							<br />
-							<Link className="text-[#FAC520] relative hover:after:w-full hover:after:transition-[width] hover:after:duration-300 after:absolute after:w-[0%] after:bg-[#FAC520] after:left-0 after:bottom-0 after:h-[2px] after:transition-[width] after:duration-300" href="/datenschutz">
+							<Link className="text-[#CC7503] relative hover:after:w-full hover:after:transition-[width] hover:after:duration-300 after:absolute after:w-[0%] after:bg-[#CC7503] after:left-0 after:bottom-0 after:h-[2px] after:transition-[width] after:duration-300" href="/datenschutz">
 								https://www.clubbery.de/datenschutz
 							</Link>
 						</p>

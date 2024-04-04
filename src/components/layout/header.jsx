@@ -16,20 +16,26 @@ const Header = () => {
 	return (
 		<header className="sticky top-0 z-50">
 			<div className="bg-[#181923] flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10">
-				<Link href="/">
+				<Link href="/" className="hover_button_animation">
 					<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={45} height={50} />
 				</Link>
 				<ul className="hidden md:flex flex-row justify-between items-center list-none gap-x-5 lg:gap-x-12 text-base">
 					<li>
-						<Link href="/not-found">So funktioniert Clubbery</Link>
+						<Link href="/not-found">
+							<p className="hover_text_animation">So funktioniert Clubbery</p>
+						</Link>
 					</li>
 					<li>
-						<Link href="/not-found">Creator werden</Link>
+						<Link href="/not-found">
+							<p className="hover_text_animation">Creator werden</p>
+						</Link>
 					</li>
 					<li>
-						<Link href="/not-found">FAQ</Link>
+						<Link href="/not-found">
+							<p className="hover_text_animation">FAQ</p>
+						</Link>
 					</li>
-					<li className="hover:scale-95 transition duration-200">
+					<li className="hover_button_animation">
 						<Link href="/not-found" className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
 							Download Clubbery
 						</Link>
@@ -45,20 +51,20 @@ const Header = () => {
 				<ul className="flex flex-col gap-y-3 items-center list-none gap-x-12 text-base text-white">
 					<li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
-							So funktioniert Clubbery
+							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
 					</li>
 					<li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
-							Creator werden
+							<p className="hover_text_animation">Creator werden</p>
 						</Link>
 					</li>
 					<li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
-							FAQ
+							<p className="hover_text_animation">FAQ</p>
 						</Link>
 					</li>
-					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
+					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4] hover_button_animation">
 						<Link onClick={() => handleOnClick()} href="/not-found">
 							Download Clubbery
 						</Link>
