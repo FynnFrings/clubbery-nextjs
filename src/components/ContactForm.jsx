@@ -32,7 +32,7 @@ const ContactForm = () => {
 			if (req.status === 200) {
 				setResponseMessage({
 					reponse: "Abgeschickt!",
-					backgroundColor: "bg-[#fac520]",
+					backgroundColor: "bg-[#CC7503]",
 					fillColor: "bg-[#f8e5af]",
 				});
 			}
@@ -43,13 +43,14 @@ const ContactForm = () => {
 				backgroundColor: "bg-red-500",
 				fillColor: "bg-red-300",
 			});
+		} finally {
+			// Resetting the `event` state properties back to empty strings on form submission
+			updateEvent({ email: "" });
+			updateEvent({ message: "" });
+			updateEvent({ firstname: "" });
+			updateEvent({ lastname: "" });
+			updateEvent({ alert: true });
 		}
-		// Resetting the `event` state properties back to empty strings on form submission
-		updateEvent({ email: "" });
-		updateEvent({ message: "" });
-		updateEvent({ firstname: "" });
-		updateEvent({ lastname: "" });
-		updateEvent({ alert: true });
 	};
 
 	// Setting variables for alert message props
@@ -61,7 +62,7 @@ const ContactForm = () => {
 	useEffect(() => {
 		setTimeout(() => {
 			updateEvent({ alert: false });
-		}, 7000);
+		}, 5000);
 	}, [event.alert]);
 	// Rendering the component
 	return (
@@ -72,9 +73,9 @@ const ContactForm = () => {
 					<div className="w-full bg-[#22221f] rounded-2xl py-8 px-8 lg:w-[55%]">
 						{/* Displaying a form for submitting messages */}
 						<form onSubmit={handleSubmit} className=" flex flex-col items-center gap-y-8 font-light text-xl">
-							<div className="w-full flex flex-row justify-between">
+							<div className="w-full flex flex-col md:flex-row justify-between gap-8">
 								<input
-									className="w-[48%] bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#FAC520] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
+									className="w-full bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
 									type="text"
 									placeholder="Vorname"
 									required
@@ -82,7 +83,7 @@ const ContactForm = () => {
 									onChange={(e) => updateEvent({ firstname: e.target.value })}
 								/>
 								<input
-									className="w-[48%] bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#FAC520] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
+									className="w-full bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
 									type="text"
 									placeholder="Nachname"
 									value={event.lastname}
@@ -91,7 +92,7 @@ const ContactForm = () => {
 							</div>
 							<div className="w-full">
 								<input
-									className="w-full bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#FAC520] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
+									className="w-full bg-transparent border border-white rounded-xl py-4 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
 									type="email"
 									placeholder="E-mail"
 									required
@@ -101,14 +102,14 @@ const ContactForm = () => {
 							</div>
 							<div className="w-full">
 								<textarea
-									className="w-full bg-transparent border border-white rounded-xl pl-2 pt-2 pb-20 focus:!shadow-[#FAC520] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
+									className="w-full bg-transparent border border-white rounded-xl pl-2 pt-2 pb-20 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none"
 									placeholder="Text"
 									required
 									value={event.message}
 									onChange={(e) => updateEvent({ message: e.target.value })}
 								/>
 							</div>
-							<button className="bg-[#FAC520] text-black w-[80%] py-2 rounded-xl font-medium text-2xl hover:scale-95 transition duration-200" type="submit">
+							<button className="bg-[#CC7503] text-[#F0FDF4] w-[80%] py-2 rounded-xl font-medium text-2xl hover:scale-95 transition duration-200" type="submit">
 								Absenden
 							</button>
 						</form>
@@ -120,7 +121,7 @@ const ContactForm = () => {
 				</div>
 			</div>
 			{/* Dispalying alert message depending on event.alert state */}
-			{event.alert ? <ContactResponseMessage response={response} fill={fillColor} background={backgroundColor} /> : ""}
+			{event.alert && <ContactResponseMessage response={response} fill={fillColor} background={backgroundColor} />}
 		</>
 	);
 };
