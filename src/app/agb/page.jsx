@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 // import Head from "next/head";
-import Link from "next/link";
 
 export default function AGB() {
 	return (
@@ -120,8 +119,11 @@ export default function AGB() {
 						<p className="leading-6 mt-2 text-gray-300">
 							Der Datenaustausch mit der SCHUFA, Boniversum oder infoscore dient auch der Erfüllung gesetzlicher Pflichten zur Durchführung von Kreditwürdigkeitsprüfungen von Kunden (§§ 505a und 506 BGB). Die SCHUFA bzw. Boniversum bzw. infoscore verarbeitet die erhaltenen Daten und
 							verwendet sie auch zum Zwecke der Profilbildung (Scoring), um ihren Vertragspartnern im Europäischen Wirtschaftsraum und in der Schweiz sowie ggf. weiteren Drittländern (sofern zu diesen ein Angemessenheitsbeschluss der Europäischen Kommission besteht) Informationen unter
-							anderem zur Beurteilung der Kreditwürdigkeit von natürlichen Personen zu geben. Nähere Informationen zur Tätigkeit der SCHUFA können dem SCHUFA-Informationsblatt nach Art. 14 DS-GVO entnommen oder online unter https://www.schufa.de/de/datenschutz-dsgvo/ eingesehen werden;
-							gleiches gilt für das Informationsblatt von infoscore.
+							anderem zur Beurteilung der Kreditwürdigkeit von natürlichen Personen zu geben. Nähere Informationen zur Tätigkeit der SCHUFA können dem SCHUFA-Informationsblatt nach Art. 14 DS-GVO entnommen oder online unter{" "}
+							<a className="text-[#CC7503] hover_text_animation" href="https://www.schufa.de/de/datenschutz-dsgvo" target="_blank">
+								https://www.schufa.de/de/datenschutz-dsgvo/
+							</a>{" "}
+							eingesehen werden; gleiches gilt für das Informationsblatt von infoscore.
 						</p>
 						<p className="leading-6 mt-2 text-gray-300">
 							Datenübermittlung bei Kreditkartentransaktionen mit Nutzung von 3D-Secure Aufgrund gesetzlicher Vorgaben (Umsetzung der Zahlungsdiensterichtlinie „PSD2“) und/oder zum Schutz vor betrügerischer Verwendung von Kreditkartendaten kann das sog. 3D-Secure-Verfahren eingesetzt
@@ -146,7 +148,13 @@ export default function AGB() {
 						<p className="leading-6 mt-2 text-gray-300">Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
 						<p className="leading-6 mt-2 text-gray-300">Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben bzw. hat.</p>
 						<p className="leading-6 mt-2 text-gray-300">Um Ihr Widerrufsrecht auszuüben, müssen Sie uns,</p>
-						<p className="leading-6 mt-2 text-gray-300">Clubbery GmbH, Kundenservice, E-Mail: support@clubbery.com,</p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Clubbery GmbH, Kundenservice, E-Mail:{" "}
+							<a className="text-[#CC7503] hover_text_animation" href="mailto:support@clubbery.com">
+								support@clubbery.com
+							</a>
+							,
+						</p>
 						<p className="leading-6 mt-2 text-gray-300">Mittels einer eindeutigen Erklärung (z.B. einer E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. </p>
 						<p className="leading-6 mt-2 text-gray-300">Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
 						<p className="leading-6 mt-2 text-gray-300">Folgen des Widerrufs</p>
@@ -164,7 +172,13 @@ export default function AGB() {
 						<p className="leading-6 mt-2 text-gray-300">Muster-Widerrufsformular:</p>
 						<p className="leading-6 mt-2 text-gray-300">(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden Sie es zurück.)</p>
 						<ul className="list-disc pl-5">
-							<li className="leading-6 mt-2 text-gray-300">An Clubbery GmbH, Kundenservice E-Mail: support@clubbery.com:</li>
+							<li className="leading-6 mt-2 text-gray-300">
+								An Clubbery GmbH, Kundenservice E-Mail:{" "}
+								<a className="text-[#CC7503] hover_text_animation" href="mailto:support@clubbery.com">
+									support@clubbery.com
+								</a>
+								:
+							</li>
 							<li className="leading-6 mt-2 text-gray-300">Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*)</li>
 							<li className="leading-6 mt-2 text-gray-300">Bestellt am (*)/erhalten am (*)</li>
 							<li className="leading-6 mt-2 text-gray-300">Name des/der Verbraucher(s)</li>
@@ -223,7 +237,13 @@ export default function AGB() {
 							Ist der Kunde Kaufmann, so ist ausschließlicher (auch internationaler) Gerichtsstand für alle sich aus dem Vertragsverhältnis unmittelbar oder mittelbar ergebenen Streitigkeiten Aachen. Dies gilt im Falle von grenzüberschreitenden Verträgen auch für Nichtkaufleute. Die
 							Clubbery GmbH behält sich das Recht vor, auch jedes andere international zuständige Gericht anzurufen.
 						</p>
-						<p className="leading-6 mt-2 text-gray-300">Die Europäische Kommission stellt ab dem 15.02.2016 hier eine Plattform zur Online-Streitbeilegung bereit. Die E-Mailadresse der Clubbery GmbH lautet support@clubbery.com. </p>
+						<p className="leading-6 mt-2 text-gray-300">
+							Die Europäische Kommission stellt ab dem 15.02.2016 hier eine Plattform zur Online-Streitbeilegung bereit. Die E-Mailadresse der Clubbery GmbH lautet{" "}
+							<a className="text-[#CC7503] hover_text_animation" href="mailto:support@clubbery.com">
+								support@clubbery.com
+							</a>
+							.
+						</p>
 						<p className="leading-6 mt-2 text-gray-300">Die Clubbery GmbH ist nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 					</div>
 					<div className="flex flex-col gap-[0.8rem]">
@@ -231,9 +251,9 @@ export default function AGB() {
 						<p className="leading-6 mt-2 text-gray-300">
 							Informationen über Art, Umfang, Ort und Zweck der Erhebung, Verarbeitung und Nutzung personenbezogenen Daten durch uns sowie über die Ihnen zustehenden Rechte entnehmen Sie bitte unserer Datenschutzerklärung.
 							<br />
-							<Link className="text-[#CC7503] relative hover:after:w-full hover:after:transition-[width] hover:after:duration-300 after:absolute after:w-[0%] after:bg-[#CC7503] after:left-0 after:bottom-0 after:h-[2px] after:transition-[width] after:duration-300" href="/datenschutz">
+							<a className="text-[#CC7503] hover_text_animation" href="/datenschutz" target="_blank">
 								https://www.clubbery.de/datenschutz
-							</Link>
+							</a>
 						</p>
 					</div>
 				</section>

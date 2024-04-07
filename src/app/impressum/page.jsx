@@ -1,3 +1,4 @@
+import Link from "next/link";
 const Impressum = () => {
 	return (
 		<>
@@ -31,7 +32,12 @@ const Impressum = () => {
 							Umsatzsteuernummer DE359877109
 							<br />
 							<br />
-							Zur Kontaktaufnahme verwenden Sie bitte unser Kontaktformular
+							Zur Kontaktaufnahme verwenden Sie bitte unser{" "}
+							<span>
+								<Link href="/contact" className="text-[#CC7503] hover_text_animation">
+									Kontaktformular
+								</Link>
+							</span>
 						</p>
 					</div>
 				</section>
