@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Landing = () => {
 	return (
-		<div className="flex flex-col md:flex-row md:justify-evenly md:items-center text-white mt-12 md:mt-36 w-full">
+		<div className="flex flex-col md:flex-row md:justify-evenly md:items-center text-white  w-full">
 			<div className="flex flex-col gap-y-5 w-full md:w-2/3">
 				<h1 className="text-3xl md:text-5xl font-bold">Dein Ticket in der Hosentasche</h1>
 				<p className="text-lg">Entdecke die Welt der Events mit Clubbery: Kaufe Tickets oder präsentiere deine eigenen Events als Veranstalter. Tauche ein in eine Welt voller Möglichkeiten und erlebe unvergessliche Momente mit uns!</p>

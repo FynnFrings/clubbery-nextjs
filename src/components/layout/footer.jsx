@@ -9,23 +9,26 @@ const Footer = () => {
 						<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={50} height={50} />
 					</Link>
 				</div>
-				<div className="w-full flex flex-col lg:flex-row text-center gap-y-8 lg:justify-center lg:gap-x-16">
-					<div className="flex flex-col items-center">
+				<div className="w-full flex flex-col md:flex-row text-center gap-y-8 md:justify-center md:gap-x-16">
+					{/* <div className="flex flex-col items-center">
 						<h2 className="font-semibold text-md mb-4">Mehr von uns</h2>
 						<a className="font-light text-xs" href="/not-found">
 							<p className="hover_text_animation">Unser Blog</p>
 						</a>
-					</div>
+					</div> */}
 					<div className="flex flex-col items-center">
 						<h2 className="font-semibold text-md mb-4">Clubbery</h2>
 						<Link className="font-light text-xs mb-2" href="/not-found">
 							<p className="hover_text_animation">Download</p>
 						</Link>
-						<a className="font-light text-xs mb-2" href="/contact">
+						{/* <a className="font-light text-xs mb-2" href="/contact">
 							<p className="hover_text_animation">Feedback</p>
 						</a>
 						<a className="font-light text-xs mb-2" href="/contact">
 							<p className="hover_text_animation">Feedback als Unternehmen</p>
+						</a> */}
+						<a className="font-light text-xs mb-2" href="/contact">
+							<p className="hover_text_animation">FAQ</p>
 						</a>
 					</div>
 					<div className="flex flex-col items-center">
