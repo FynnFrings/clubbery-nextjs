@@ -19,7 +19,7 @@ const Header = () => {
 		<header className="sticky top-0 z-50 mb-8 lg:mb-5">
 			<div className={`${scrollPosition > 0 || menu ? "bg-[#262730]" : "bg-transparent"} ${scrollPosition > 0 && !menu ? "shadow-lg" : "shadow-none"} transition-colors ease-in duration-100 flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10`}>
 				<Link href="/" className="hover_button_animation">
-					<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={45} height={50} />
+					<Image src="/logo.png" alt="Clubbery Logo Image" width={45} height={50} />
 				</Link>
 				<ul className="hidden md:flex flex-row justify-between items-center list-none gap-x-5 lg:gap-x-12 text-base">
 					{/* <li>

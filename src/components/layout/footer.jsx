@@ -6,7 +6,7 @@ const Footer = () => {
 			<div className="flex flex-col items-center border-y border-slate-600 py-8 gap-y-8">
 				<div className="hover:scale-95 transition duration-200">
 					<Link href="/" className="hover_button_animation">
-						<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={50} height={50} />
+						<Image src="/logo.png" alt="Clubbery Logo Image" width={50} height={50} />
 					</Link>
 				</div>
 				<div className="w-full flex flex-col md:flex-row text-center gap-y-8 md:justify-center md:gap-x-16">
