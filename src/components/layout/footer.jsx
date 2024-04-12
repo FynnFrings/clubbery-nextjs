@@ -28,7 +28,7 @@ const Footer = () => {
 							<p className="hover_text_animation">Feedback als Unternehmen</p>
 						</a> */}
 						<a className="font-light text-xs mb-2" href="/contact">
-							<p className="hover_text_animation">FAQ</p>
+							<p className="hover_text_animation">Kontakt</p>
 						</a>
 					</div>
 					<div className="flex flex-col items-center">

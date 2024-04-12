@@ -33,8 +33,8 @@ const Header = () => {
 						</Link>
 					</li> */}
 					<li>
-						<Link href="/not-found">
-							<p className="hover_text_animation">FAQ</p>
+						<Link href="/contact">
+							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
 					<li className="hover_button_animation">
@@ -62,8 +62,8 @@ const Header = () => {
 						</Link>
 					</li> */}
 					<li>
-						<Link onClick={() => handleOnClick()} href="/not-found">
-							<p className="hover_text_animation">FAQ</p>
+						<Link onClick={() => handleOnClick()} href="/contact">
+							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
 					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4] hover_button_animation">
