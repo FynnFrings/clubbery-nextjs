@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
+import { useScrollPosition } from "@/app/hooks/useScrollPosition";
 
 const Header = () => {
 	const [menu, setMenu] = useState(false);
@@ -13,14 +14,15 @@ const Header = () => {
 		setMenu(!menu);
 	};
 	// const device = useMobileDetect();
+	const scrollPosition = useScrollPosition();
 	return (
-		<header className="sticky top-0 z-50">
-			<div className="bg-[#181923] flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10">
+		<header className="sticky top-0 z-50 mb-8 lg:mb-5">
+			<div className={`${scrollPosition > 0 || menu ? "bg-[#262730]" : "bg-transparent"} ${scrollPosition > 0 && !menu ? "shadow-lg" : "shadow-none"} transition-colors ease-in duration-100 flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10`}>
 				<Link href="/" className="hover_button_animation">
 					<Image src="/clubbery_logo.png" alt="Clubbery Logo Image" width={45} height={50} />
 				</Link>
 				<ul className="hidden md:flex flex-row justify-between items-center list-none gap-x-5 lg:gap-x-12 text-base">
-					<li>
+					{/* <li>
 						<Link href="/not-found">
 							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
@@ -29,7 +31,7 @@ const Header = () => {
 						<Link href="/not-found">
 							<p className="hover_text_animation">Creator werden</p>
 						</Link>
-					</li>
+					</li> */}
 					<li>
 						<Link href="/not-found">
 							<p className="hover_text_animation">FAQ</p>
@@ -47,9 +49,9 @@ const Header = () => {
 					</button>
 				</div>
 			</div>
-			<div className={`absolute md:hidden ${menu ? "translate-y-0" : "-translate-y-[200%]"} bg-[#181923] w-full pb-5 transition ease-in-out shadow-lg -z-10`}>
+			<div className={`absolute md:hidden ${menu ? "translate-y-0" : "-translate-y-[200%]"} bg-[#262730] w-full pb-5 transition ease-in-out shadow-lg -z-10`}>
 				<ul className="flex flex-col gap-y-3 items-center list-none gap-x-12 text-base text-white">
-					<li>
+					{/* <li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
 							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
@@ -58,7 +60,7 @@ const Header = () => {
 						<Link onClick={() => handleOnClick()} href="/not-found">
 							<p className="hover_text_animation">Creator werden</p>
 						</Link>
-					</li>
+					</li> */}
 					<li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
 							<p className="hover_text_animation">FAQ</p>
