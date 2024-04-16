@@ -23,10 +23,10 @@ const Footer = () => {
 						</Link>
 						{/* <a className="font-light text-xs mb-2" href="/contact">
 							<p className="hover_text_animation">Feedback</p>
-						</a>
-						<a className="font-light text-xs mb-2" href="/contact">
-							<p className="hover_text_animation">Feedback als Unternehmen</p>
 						</a> */}
+						<Link className="font-light text-xs mb-2" href="/faq">
+							<p className="hover_text_animation">FAQ</p>
+						</Link>
 						<a className="font-light text-xs mb-2" href="/contact">
 							<p className="hover_text_animation">Kontakt</p>
 						</a>

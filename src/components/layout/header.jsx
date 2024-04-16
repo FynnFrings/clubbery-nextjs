@@ -26,12 +26,12 @@ const Header = () => {
 						<Link href="/not-found">
 							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
-					</li>
-					<li>
-						<Link href="/not-found">
-							<p className="hover_text_animation">Creator werden</p>
-						</Link>
 					</li> */}
+					<li>
+						<Link href="/faq">
+							<p className="hover_text_animation">FAQ</p>
+						</Link>
+					</li>
 					<li>
 						<Link href="/contact">
 							<p className="hover_text_animation">Kontakt</p>
