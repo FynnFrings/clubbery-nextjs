@@ -67,10 +67,16 @@ const ContactForm = () => {
 	// Rendering the component
 	return (
 		<>
-			<div className="text-white flex flex-col items-center gap-y-14 py-20">
-				<h2 className="block text-5xl font-bold lg:hidden ">Kontakt</h2>
-				<div className="w-full flex flex-col gap-y-8 lg:gap-y-0 lg:flex lg:flex-row-reverse lg:justify-around lg:gap-x-6 lg:items-center">
-					<div className="w-full bg-[#22221f] rounded-2xl py-8 px-8 lg:w-[55%]">
+			<div className="text-white flex flex-col items-center gap-y-14 pt-0 md:pt-10 pb-20">
+				<div className="w-full flex flex-col gap-y-8 lg:gap-y-0 lg:flex lg:flex-row lg:justify-around lg:gap-x-6 lg:items-center">
+					<div className="w-auto lg:w-1/3">
+						<h2 className="font-semibold text-5xl mb-6 text-center lg:text-left">Kontakt</h2>
+						<p className="font-light pl-2 lg:pl-0 text-xl lg:text-lg">
+							Ein Kontaktformular und so viele Möglichkeiten: Feedback, Verbesserungsvorschläge, Ideen zu Erweiterungen bzw. neuen Funktionen, Supportanfragen, Kontaktaufnahme bezüglich einer Zusammenarbeit oder Investitionsinteresse und vieles mehr. Egal wozu du dich entscheidest, wir
+							freuen uns von dir zu hören!
+						</p>
+					</div>
+					<div className="w-full bg-[#22221f] rounded-2xl py-8 px-8 lg:w-1/2">
 						{/* Displaying a form for submitting messages */}
 						<form onSubmit={handleSubmit} className=" flex flex-col items-center gap-y-8 font-light text-xl">
 							<div className="w-full flex flex-col md:flex-row justify-between gap-8">
@@ -113,13 +119,6 @@ const ContactForm = () => {
 								Absenden
 							</button>
 						</form>
-					</div>
-					<div className="w-auto lg:w-[35%]">
-						<h2 className="font-semibold text-5xl mb-6 hidden lg:block">Kontakt</h2>
-						<p className="font-light pl-2 lg:pl-0 text-xl lg:text-lg">
-							Ein Kontaktformular und so viele Möglichkeiten: Feedback, Verbesserungsvorschläge, Ideen zu Erweiterungen bzw. neuen Funktionen, Supportanfragen, Kontaktaufnahme bezüglich einer Zusammenarbeit oder Investitionsinteresse und vieles mehr. Egal wozu du dich entscheidest, wir
-							freuen uns von dir zu hören!
-						</p>
 					</div>
 				</div>
 			</div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const FAQ = () => {
 	return (
 		<>
@@ -62,7 +64,13 @@ const FAQ = () => {
 						<p className="mt-5 text-base md:text-lg">(Müssen wir zusammen abklären und entsprechend im Stripe einstellen)</p>
 					</details>
 				</div>
-				<p className="text-base md:text-lg">Nicht die richtige Lösung für dein Problem bzw. dein Anliegen gefunden? Dann nutze gerne unser Kontaktformular (Link) oder schreibe uns eine Mail an support@clubbery.com, um mit uns Kontakt aufzunehmen.</p>
+				<p className="text-base md:text-lg">
+					Nicht die richtige Lösung für dein Problem bzw. dein Anliegen gefunden? Dann nutze gerne unser{" "}
+					<Link href="/contact" className="hover_text_animation text-[#CC7503]">
+						Kontaktformular
+					</Link>
+					oder schreibe uns eine Mail an support@clubbery.com, um mit uns Kontakt aufzunehmen.
+				</p>
 			</div>
 		</>
 	);
