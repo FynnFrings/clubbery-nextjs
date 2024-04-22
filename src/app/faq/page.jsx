@@ -45,31 +45,39 @@ const FAQ = () => {
 						<summary className="text-lg md:text-2xl hover_text_animation w-fit list-none cursor-pointer">In welchen Ländern kann ich Events über die Clubbery App finden?</summary>
 						<p className="mt-5 text-base md:text-lg">
 							Aktuell sind wir einzig in Deutschland vertreten und wachsen von unserer Heimatstadt Aachen ausgehend über ganz Deutschland. Aber keine Sorge, selbstverständlich ist es unser Ziel weltweit die angesagtesten Events und Partys für dich in die Clubbery App zu holen. Falls du
-							eine Diskothek besitzt oder in einer arbeitest, dann nutze gerne unser Kontaktformular, um mit uns Kontakt aufzunehmen, wir freuen uns von dir zu hören!{" "}
+							eine Diskothek besitzt oder in einer arbeitest, dann nutze gerne unser <Link href="/contact" className="hover_text_animation text-[#CC7503]">
+						Kontaktformular
+					</Link>, um mit uns Kontakt aufzunehmen, wir freuen uns von dir zu hören!{" "}
 						</p>
 					</details>
 					<details>
 						<summary className="text-lg md:text-2xl hover_text_animation w-fit list-none cursor-pointer">Hilft euch mein Feedback weiter?</summary>
 						<p className="mt-5 text-base md:text-lg">
 							Selbstverständlich helfen uns dein Feedback, deine Verbesserungsvorschläge und Ideen zu Erweiterungen bzw. neuen Funktionen weiter! Und da wir wissen, wie wertvoll deine Zeit ist, bekommen die besten drei Nachrichten jeden Monat ein großartiges Geschenkpaket von uns.
-							Nutze zur Teilnahme gerne unser Kontaktformular.{" "}
+							Nutze zur Teilnahme gerne unser <Link href="/contact" className="hover_text_animation text-[#CC7503]">
+						Kontaktformular
+					</Link>.{" "}
 						</p>
 					</details>
 					<details>
 						<summary className="text-lg md:text-2xl hover_text_animation w-fit list-none cursor-pointer">Wann bekomme ich meine Ticket-Einnahmen überwiesen?</summary>
-						<p className="mt-5 text-base md:text-lg">(Müssen wir zusammen abklären und entsprechend im Stripe einstellen)</p>
+						<p className="mt-5 text-base md:text-lg">Über einen Zeitraum von 7 Tagen werden sämtliche deiner Einnahmen bei unserem Zahlungsabwickler gesammelt und dir dann gebündelt überwiesen (durch dieses Verfahren ermöglichen wir dir die geringsten möglichen Gebühren beim Zahlungsabwickler).  </p>
 					</details>
 					<details>
 						<summary className="text-lg md:text-2xl hover_text_animation w-fit list-none cursor-pointer">Welche Bezahlmethoden werden akzeptiert? </summary>
-						<p className="mt-5 text-base md:text-lg">(Müssen wir zusammen abklären und entsprechend im Stripe einstellen)</p>
+						<p className="mt-5 text-base md:text-lg">In der Clubbery App stehen dir die folgenden Bezahlmethoden zur Verfügung: < br />•	Apple Pay < br />
+•	Google Pay < br />
+•	Visa < br />
+•	Mastercard < br />
+•	American Express</p>
 					</details>
 				</div>
 				<p className="text-base md:text-lg">
 					Nicht die richtige Lösung für dein Problem bzw. dein Anliegen gefunden? Dann nutze gerne unser{" "}
 					<Link href="/contact" className="hover_text_animation text-[#CC7503]">
-						Kontaktformular
-					</Link>
-					oder schreibe uns eine Mail an support@clubbery.com, um mit uns Kontakt aufzunehmen.
+						Kontaktformular 
+					</Link> {" "}
+					 oder schreibe uns eine Mail an support@clubbery.com, um mit uns Kontakt aufzunehmen.
 				</p>
 			</div>
 		</>
