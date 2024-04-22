@@ -50,17 +50,17 @@ const Header = () => {
 				</div>
 			</div>
 			<div className={`absolute md:hidden ${menu ? "translate-y-0" : "-translate-y-[200%]"} bg-[#262730] w-full pb-5 transition ease-in-out shadow-lg -z-10`}>
-				<ul className="flex flex-col gap-y-3 items-center list-none gap-x-12 text-base text-white">
+				<ul className="flex flex-col gap-y-3 items-center list-none gap-x-12 text-white text-lg">
 					{/* <li>
 						<Link onClick={() => handleOnClick()} href="/not-found">
 							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
-					</li>
-					<li>
-						<Link onClick={() => handleOnClick()} href="/not-found">
-							<p className="hover_text_animation">Creator werden</p>
-						</Link>
 					</li> */}
+					<li>
+						<Link onClick={() => handleOnClick()} href="/faq">
+							<p className="hover_text_animation">FAQ</p>
+						</Link>
+					</li>
 					<li>
 						<Link onClick={() => handleOnClick()} href="/contact">
 							<p className="hover_text_animation">Kontakt</p>
