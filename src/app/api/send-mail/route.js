@@ -7,8 +7,8 @@ export async function POST(req) {
 	const data = await req.json();
 
 	const message = {
-		from: `${data.email}`,
-		to: process.env.SMTP_USER,
+		to: `${data.email}`,
+		from: process.env.SMTP_USER,
 		subject: `Message from ${data.email}. ${data.firstname} ${data.lastname}`,
 		text: data.message,
 	};

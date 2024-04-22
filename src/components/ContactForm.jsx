@@ -33,7 +33,7 @@ const ContactForm = () => {
 				setResponseMessage({
 					reponse: "Abgeschickt!",
 					backgroundColor: "bg-[#CC7503]",
-					fillColor: "bg-[#f8e5af]",
+					fillColor: "bg-[#00ff00]", // f8e5af
 				});
 			}
 		} catch (e) {
