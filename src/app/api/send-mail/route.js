@@ -10,7 +10,7 @@ export async function POST(req) {
     to: `${data.email}`,
     from: process.env.SMTP_USER,
     subject: `Bestätigung Anfrage Clubbery Kontaktformular`,
-    text: `Vielen Dank für deine Nachricht ${data.firstname}, wir freuen uns von dir zu hören! \n\nUnser Support-Team wird sich schnellstmöglich mit dir in Verbindung setzen.\n\n${data.message}\n\nMit freundlichen Grüßen\nDein Clubbery Support\n\n So lautet die Nachricht, welche wir von dir erhalten haben:`,
+    text: `Vielen Dank für deine Nachricht ${data.firstname}, wir freuen uns von dir zu hören! \n\nUnser Support-Team wird sich schnellstmöglich mit dir in Verbindung setzen.\n\nMit freundlichen Grüßen\nDein Clubbery Support\n\n So lautet die Nachricht, welche wir von dir erhalten haben:\n\n${data.message}`,
   };
 
   const supportMessage = {
