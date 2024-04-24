@@ -17,7 +17,7 @@ export async function POST(req) {
     to: `support@clubbery.com`,
     from: process.env.SMTP_USER,
     subject: `Neue Anfrage von ${data.firstname} ${data.lastname}`,
-    text: `Titel: Anfrage Clubbery Kontaktformular\n\nKundendaten: ${data.email}, ${data.firstname} ${data.lastname}\n\nNachricht: ${data.message}}`,
+    text: `Titel: Anfrage Clubbery Kontaktformular\n\nKundendaten: ${data.email}, ${data.firstname} ${data.lastname}\n\nNachricht: ${data.message}`,
   };
 
   // setting a properties for nodemailer
