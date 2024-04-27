@@ -17,6 +17,7 @@ module.exports = {
 		animation: {
 			fill: "fill 2s ease-out 1 forwards",
 			popup: "popup 0.5s ease-in-out 1 forwards, popupDelay 0.5s ease-in-out 4s 1 forwards",
+			spin: "spin 1s linear infinite",
 			// slide: "slide 0.5s ease 0s 1 normal forwards",
 			// slideBack: "slideBack 0.5s ease 0s 1 normal forwards",
 			// loader: "loader 1s linear infinite",
@@ -32,6 +33,14 @@ module.exports = {
 				},
 				"100%": {
 					bottom: "1rem",
+				},
+			},
+			spin: {
+				"0%": {
+					transform: "rotate(0deg)",
+				},
+				"100%": {
+					transform: "rotate(360deg)",
 				},
 			},
 			// popupDelay: {
