@@ -15,7 +15,7 @@ const ContactForm = () => {
 			firstname: "",
 			lastname: "",
 			alert: false,
-			isMessageSended: true,
+			isMessageSended: false,
 		}
 	);
 	const [responseMessage, setResponseMessage] = useState({
