@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "239346N672.net.swibble.clubberyApp",
-        "paths": ["/event"]
+        "paths": ["/event", "/event/*"]
       }
     ]
   }
