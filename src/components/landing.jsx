@@ -7,6 +7,7 @@ const Landing = () => {
 			<div className="flex flex-col gap-y-5 w-full md:w-2/3">
 				<h1 className="text-3xl md:text-5xl font-bold">Dein Ticket in der Hosentasche</h1>
 				<p className="text-lg">Entdecke die Welt der Partys mit Clubbery: Kaufe Tickets oder präsentiere deine eigenen Partys als Veranstalter. Tauche ein in eine Welt voller Möglichkeiten und erlebe unvergessliche Momente mit uns!</p>
+				<h2>Bald hier verfügbar:</h2>
 				<div className="flex flex-col md:flex-row gap-5">
 					<Image src="/badges/apple-badge.svg" alt="Laden in App Store" width={150} height={50} />
 					<Image src="/badges/google-play-badge.png" alt="Laden in Google Play Store" width={150} height={50} />

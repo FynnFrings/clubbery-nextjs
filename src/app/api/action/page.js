@@ -12,11 +12,3 @@ export default function Home() {
 
   //return <>Current Page is : {pageNumber}</>;
 }
-/*
-export default async function Home({ params }) {
-  const router = useRouter();
-  console.log(router.query);
-  redirect("/hello-nextjs" +params);
-  // ...
-}
-*/
