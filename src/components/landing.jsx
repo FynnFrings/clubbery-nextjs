@@ -19,7 +19,7 @@ const Landing = () => {
             href="https://apps.apple.com/de/app/clubbery/id6476625439"
           >
             <Image
-              src="/badges/apple-badge.svg"
+              src="/badges/apple-badge.png"
               alt="Laden in App Store"
               width={150}
               height={50}
