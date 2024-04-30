@@ -18,7 +18,8 @@ const Footer = () => {
 					</div> */}
 					<div className="flex flex-col items-center">
 						<h2 className="font-semibold text-md mb-4">Clubbery</h2>
-						<Link className="font-light text-xs mb-2" href="/not-found">
+						<Link className="font-light text-xs mb-2" target="_blank"
+							href="https://apps.apple.com/de/app/clubbery/id6476625439">
 							<p className="hover_text_animation">Download</p>
 						</Link>
 						{/* <a className="font-light text-xs mb-2" href="/contact">
