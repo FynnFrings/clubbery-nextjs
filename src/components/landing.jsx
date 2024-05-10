@@ -25,12 +25,17 @@ const Landing = () => {
               height={50}
             />{" "}
           </Link>
+          <Link
+            target="_blank"
+            href="https://play.google.com/store/apps/details?id=net.swibble.clubberyApp"
+          >
           <Image
-            src="/badges/google_play_store_black_and_white.png"
+            src="/badges/google-play-badge.png"
             alt="Laden in Google Play Store"
             width={150}
             height={50}
           />
+           </Link>
         </div>
       </div>
       <div className="hidden md:block relative">
