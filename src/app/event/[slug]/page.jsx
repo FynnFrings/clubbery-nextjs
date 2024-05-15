@@ -6,7 +6,7 @@ import Link from "next/link";
 function EventPage() {
     return (
         <div className="w-full h-screen flex flex-col justify-center items-center gap-5">
-            <p className="text-white text-3xl font-semibold">Installiere die Clubbery App um, das Event zu sehen!</p>
+            <p className="text-white text-3xl font-semibold">Installiere unsere Clubbery App, um dieses und viele weitere Events sehen zu können!</p>
             <div className="flex flex-col md:flex-row gap-5">
                 <Link
                     target="_blank"
