@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+
 function EventPage() {
     return (
         <div className="w-full h-screen flex flex-col justify-center items-center gap-5">
