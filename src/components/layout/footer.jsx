@@ -47,7 +47,7 @@ const Footer = () => {
 
 				</div>
 				<div className="hover:scale-95 transition duration-200">
-					<Link href="/" className="hover_button_animation">
+					<Link href="https://www.instagram.com/clubbery.app" className="hover_button_animation">
 						<Image src="/insta-icon.png" alt="Instagram Logo Image" width={50} height={50} />
 					</Link>
 				</div>
