@@ -46,7 +46,7 @@ const Footer = () => {
 					</div>
 
 				</div>
-				<div className="w-full flex flex-col md:flex-row text-center gap-y-8 md:justify-center md:gap-x-16">
+				<div className="w-full flex flex-col md:flex-row text-center gap-y-4 md:justify-center md:gap-x-8">
 					<div className="hover:scale-95 transition duration-200">
 						<Link href="https://www.instagram.com/clubbery.app" target="_blank" className="hover_button_animation">
 							<Image src="/insta-icon.png" alt="Instagram Logo Image" width={40} height={40} />
