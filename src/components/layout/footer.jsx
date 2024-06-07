@@ -44,11 +44,12 @@ const Footer = () => {
 							<p className="hover_text_animation">AGB</p>
 						</Link>
 					</div>
-					<div className="hover:scale-95 transition duration-200">
-						<Link href="/" className="hover_button_animation">
-							<Image src="/insta-icon.png" alt="Instagram Logo Image" width={50} height={50} />
-						</Link>
-					</div>
+
+				</div>
+				<div className="hover:scale-95 transition duration-200">
+					<Link href="/" className="hover_button_animation">
+						<Image src="/insta-icon.png" alt="Instagram Logo Image" width={50} height={50} />
+					</Link>
 				</div>
 			</div>
 			<div className="text-center lg:text-left py-8 font-thin text-xs">
