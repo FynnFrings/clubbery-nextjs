@@ -18,7 +18,8 @@ const Footer = () => {
 					</div> */}
 					<div className="flex flex-col items-center">
 						<h2 className="font-semibold text-md mb-4">Clubbery</h2>
-						<Link className="font-light text-xs mb-2" href="/not-found">
+						<Link className="font-light text-xs mb-2" target="_blank"
+							href="https://apps.apple.com/de/app/clubbery/id6476625439">
 							<p className="hover_text_animation">Download</p>
 						</Link>
 						{/* <a className="font-light text-xs mb-2" href="/contact">
@@ -43,11 +44,27 @@ const Footer = () => {
 							<p className="hover_text_animation">AGB</p>
 						</Link>
 					</div>
+
+				</div>
+				<div className="w-full flex flex-col md:flex-row text-center gap-y-4 md:justify-center md:gap-x-8">
+					<div className="flex flex-row items-center justify-center md:gap-x-8">
+						<div className="hover:scale-95 transition duration-200">
+							<Link href="https://www.instagram.com/clubbery.app" target="_blank" className="hover_button_animation">
+								<Image src="/insta-icon.png" alt="Instagram Logo Image" width={35} height={35} />
+							</Link>
+						</div>
+						<div className="hover:scale-95 transition duration-200">
+							<Link href="https://www.linkedin.com/company/clubbery/" target="_blank" className="hover_button_animation">
+								<Image src="/linkedin-icon.png" alt="LinkedIn Logo Image" width={35} height={35} />
+							</Link>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div className="text-center lg:text-left py-8 font-thin text-xs">
 				<h3>&#9400; 2024 copyright. Alle rechte vorbehalten.</h3>
 			</div>
+
 		</div>
 	);
 };
