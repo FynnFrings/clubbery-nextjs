@@ -1,0 +1,14 @@
+[
+    {
+      "relation": [
+        "delegate_permission/common.handle_all_urls"
+      ],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "net.swibble.clubberyApp",
+        "sha256_cert_fingerprints": [
+          "7A:C3:19:DA:92:07:C0:AF:B6:A3:05:AC:E3:CC:2E:CB:B5:FA:9E:57:B6:3E:F4:2D:EC:32:1D:53:31:F6:27:C5"
+        ]
+      }
+    }
+  ]
