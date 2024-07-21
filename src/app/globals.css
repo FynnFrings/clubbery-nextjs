@@ -13,3 +13,33 @@ body {
 .hover_button_animation {
 	@apply hover:scale-95 transition duration-200;
 }
+
+.clubbery_main_button {
+	@apply px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4];
+}
+
+.clubbery_main_sm_button {
+	@apply px-3 py-2 rounded-xl bg-[#CC7503] text-[#F0FDF4];
+}
+
+.clubbery_secondary_button {
+	@apply px-5 py-3 rounded-2xl bg-gray-500 text-[#F0FDF4];
+}
+
+.clubbery_secondary_sm_button {
+	@apply px-3 py-2 rounded-xl bg-gray-500 text-[#F0FDF4];
+}
+
+.glass_background {
+	background: rgba(154, 132, 132, 0.23);
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5.8px);
+	-webkit-backdrop-filter: blur(5.8px);
+}
+
+.glass_background_modal {
+	background: rgba(255, 255, 255, 0.2);
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
+}
