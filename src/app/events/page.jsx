@@ -6,12 +6,12 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 
-const fetcher = (...args) => fetch(...args, { headers: { "Access-Control-Allow-Origin": "*ﬁ" } }).then((res) => res.json());
-
 function EventPage() {
-	// const { data, isLoading, error } = useSWR("https://getallevents-qh42lmu4jq-uc.a.run.app", fetcher);
-	// console.log("🚀 ~ EventPage ~ data:", data);
-	// console.log("🚀 ~ EventPage ~ error:", error);
+	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+	const { data, isLoading, error } = useSWR("https://getallevents-qh42lmu4jq-uc.a.run.app", fetcher);
+	console.log("🚀 ~ EventPage ~ data:", data);
+	console.log("🚀 ~ EventPage ~ error:", error);
 
 	const [eventsSearchInput, setEventsSearchInput] = useState("");
 
@@ -47,11 +47,6 @@ function EventPage() {
 					<SearchField handleSearchInputChange={handleInputSearchChange} searchInput={eventsSearchInput} searchIputPlaceholder={"Search"} />
 				</div>
 				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 ">
-					<EventCard handleShowBanner={handleShowBanner} />
-					<EventCard handleShowBanner={handleShowBanner} />
-					<EventCard handleShowBanner={handleShowBanner} />
-					<EventCard handleShowBanner={handleShowBanner} />
-					<EventCard handleShowBanner={handleShowBanner} />
 					<EventCard handleShowBanner={handleShowBanner} />
 				</div>
 			</div>
