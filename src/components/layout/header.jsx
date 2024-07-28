@@ -28,6 +28,11 @@ const Header = () => {
 						</Link>
 					</li> */}
 					<li>
+						<Link href="/events">
+							<p className="hover_text_animation">Events</p>
+						</Link>
+					</li>
+					<li>
 						<Link href="/faq">
 							<p className="hover_text_animation">FAQ</p>
 						</Link>
@@ -56,6 +61,11 @@ const Header = () => {
 							<p className="hover_text_animation">So funktioniert Clubbery</p>
 						</Link>
 					</li> */}
+					<li>
+						<Link onClick={() => handleOnClick()} href="/events">
+							<p className="hover_text_animation">Events</p>
+						</Link>
+					</li>
 					<li>
 						<Link onClick={() => handleOnClick()} href="/faq">
 							<p className="hover_text_animation">FAQ</p>
