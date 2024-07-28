@@ -4,6 +4,7 @@ import ErrorComponent from "@/components/ErrorComponent";
 import EventCard from "@/components/Event/EventCard";
 import SearchField from "@/components/InputForms/SearchField";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import filterItemsByName from "@/helpers/filterItemsByName";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
@@ -25,6 +26,8 @@ function EventPage() {
 		!showBanner && setShowBanner(true);
 	};
 
+	const sortedEventsBySearchInput = [...(data || [])].filter((event) => filterItemsByName(event.details.title, eventsSearchInput));
+
 	useEffect(() => {
 		showBanner &&
 			setTimeout(() => {
@@ -44,10 +47,10 @@ function EventPage() {
 					<h1 className="text-white text-5xl absolute top-1/2 left-1/2 -translate-x-1/2">Events</h1>
 				</div>
 				<div>
-					<SearchField handleSearchInputChange={handleInputSearchChange} searchInput={eventsSearchInput} searchIputPlaceholder={"Search"} />
+					<SearchField handleSearchInputChange={handleInputSearchChange} searchInput={eventsSearchInput} searchIputPlaceholder={"Events suchen"} />
 				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 ">
-					{data.map((eventData) => (
+				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mt-5">
+					{sortedEventsBySearchInput.map((eventData) => (
 						<EventCard eventData={eventData} key={eventData.id} handleShowBanner={handleShowBanner} />
 					))}
 				</div>
