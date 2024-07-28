@@ -13,6 +13,9 @@ module.exports = {
 			boxShadow: {
 				input: "0 0 5px !important",
 			},
+			colors: {
+				"clubbery-orange": "#CC7503",
+			},
 		},
 		animation: {
 			fill: "fill 2s ease-out 1 forwards",
@@ -20,7 +23,7 @@ module.exports = {
 			spin: "spin 1s linear infinite",
 			// slide: "slide 0.5s ease 0s 1 normal forwards",
 			// slideBack: "slideBack 0.5s ease 0s 1 normal forwards",
-			// loader: "loader 1s linear infinite",
+			loader: "loader 1s linear infinite",
 		},
 		keyframes: {
 			fill: {
@@ -67,17 +70,17 @@ module.exports = {
 			// 		transform: "translateX(600px)",
 			// 	},
 			// },
-			// loader: {
-			// 	"0%": {
-			// 		transform: "translateX(-100%)" /* Start from the left side */,
-			// 	},
-			// 	"50%": {
-			// 		transform: "translateX(100%)" /* Move to the right side */,
-			// 	},
-			// 	"100%": {
-			// 		transform: "translateX(200%)" /* Move to the right side */,
-			// 	},
-			// },
+			loader: {
+				"0%": {
+					transform: "translateX(-100%)" /* Start from the left side */,
+				},
+				"50%": {
+					transform: "translateX(100%)" /* Move to the right side */,
+				},
+				"100%": {
+					transform: "translateX(200%)" /* Move to the right side */,
+				},
+			},
 		},
 	},
 	plugins: [require("tailwindcss-animated")],

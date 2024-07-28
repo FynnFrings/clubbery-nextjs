@@ -1,12 +1,23 @@
 import { useState, useEffect } from "react";
 import EventCardMoreInfo from "./EventCardMoreInfo";
+import Image from "next/image";
+import convertUnixDateToFullDate from "@/helpers/convertUnixDateFullDate";
+import convertLongDateToShortDate from "@/helpers/convertLongDatetoShortDate.js";
 
-const EventCard = ({ handleShowBanner }) => {
+const EventCard = ({ handleShowBanner, eventData }) => {
 	const [showEventMoreInfo, setShowEventMoreInfo] = useState(false);
 
 	const handleShowMoreInfo = () => {
 		setShowEventMoreInfo(!showEventMoreInfo);
 	};
+
+	const eventImageUrl = eventData?.images[0]?.url ?? "/party.webp";
+
+	const eventDetails = eventData.details;
+
+	const convertedDate = convertUnixDateToFullDate(eventData.timeFrame);
+
+	const shortDate = convertLongDateToShortDate(convertedDate.openDate);
 
 	useEffect(() => {
 		showEventMoreInfo ? window.document.getElementById("body").classList.add("overflow-hidden") : window.document.getElementById("body").classList.remove("overflow-hidden");
@@ -14,14 +25,15 @@ const EventCard = ({ handleShowBanner }) => {
 
 	return (
 		<>
-			<div className="relative before:absolute before:bg-[url('/party.webp')] before:block before:left-0 before:right-0 before:w-full before:h-full before:opacity-40 before:bg-cover before:bg-no-repeat before:bg-center before:rounded-lg">
+			<div className="relative">
+				<Image src={eventImageUrl} alt={eventDetails.title} width={340} height={100} className="opacity-60 absolute w-full h-full rounded-lg bg-cover object-cover" />
 				<div className="relative px-5 mt-4 ">
-					<h2 className="text-2xl font-semibold mb-20 text-zinc-100 mt-5">Der Name des Events</h2>
+					<h2 className="text-2xl font-semibold mb-20 text-zinc-100 mt-5">{eventDetails.title}</h2>
 					<div className="flex justify-between items-center text-zinc-300">
 						<div className="flex items-center text-sm mb-2">
-							21 June <span className="mx-2 text-2xl">•</span> 19:00
+							{shortDate}&nbsp;<span className="text-2xl">•</span>&nbsp;{convertedDate.openTime}
 						</div>
-						<p className="text-md">Ab 21 Jahre</p>
+						{eventDetails.minimumAge && <p className="text-md">Ab {eventDetails.minimumAge} Jahre</p>}
 					</div>
 					{/* <p className="text-neutral-50 text-xs font-light mt-20 mb-1">Glabacher Straße 200, 47980 Krefeld</p> */}
 				</div>
