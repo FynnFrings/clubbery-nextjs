@@ -44,9 +44,9 @@ const EventCard = ({ handleShowBanner, eventData }) => {
 				</Link>
 
 				<div className="py-5 px-2 lg:px-5 flex justify-around items-center gap-x-3 lg:gap-x-5 rounded-b-lg glass_background">
-					<button onClick={handleShowBanner} className="w-1/2 clubbery_main_sm_button hover_button_animation">
+					<Link target="_blank" href="/events/[id]" as={`/events/${eventData.itemId}`} className="w-1/2 text-center clubbery_main_sm_button hover_button_animation">
 						Ticket kaufen
-					</button>
+					</Link>
 					<button onClick={handleShowMoreInfo} className="w-1/2 clubbery_secondary_sm_button hover_button_animation">
 						More info
 					</button>
