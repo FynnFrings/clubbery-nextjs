@@ -8,7 +8,7 @@ const convertLongDateToShortDate = (dateStr) => {
 	const formattedDay = date.getDate();
 	const formattedMonth = monthNames[date.getMonth()];
 
-	return `${formattedDay} ${formattedMonth}`;
+	return `${formattedMonth} ${formattedDay}`;
 };
 
 export default convertLongDateToShortDate;

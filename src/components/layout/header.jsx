@@ -42,6 +42,11 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
+					<li>
+						<Link href="/signup">
+							<p className="hover_text_animation">Anmelden</p>
+						</Link>
+					</li>
 					<li className="hover_button_animation">
 						<Link target="_blank" href="https://apps.apple.com/de/app/clubbery/id6476625439" className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
 							Download Clubbery
@@ -74,6 +79,11 @@ const Header = () => {
 					<li>
 						<Link onClick={() => handleOnClick()} href="/contact">
 							<p className="hover_text_animation">Kontakt</p>
+						</Link>
+					</li>
+					<li>
+						<Link onClick={() => handleOnClick()} href="/signup">
+							<p className="hover_text_animation">Anmelden</p>
 						</Link>
 					</li>
 					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4] hover_button_animation">
