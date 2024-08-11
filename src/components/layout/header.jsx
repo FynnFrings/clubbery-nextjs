@@ -43,7 +43,7 @@ const Header = () => {
 						</Link>
 					</li>
 					<li>
-						<Link href="/signup">
+						<Link href="/signin">
 							<p className="hover_text_animation">Anmelden</p>
 						</Link>
 					</li>
@@ -82,7 +82,7 @@ const Header = () => {
 						</Link>
 					</li>
 					<li>
-						<Link onClick={() => handleOnClick()} href="/signup">
+						<Link onClick={() => handleOnClick()} href="/signin">
 							<p className="hover_text_animation">Anmelden</p>
 						</Link>
 					</li>

@@ -8,13 +8,12 @@ import filterItemsByName from "@/helpers/filterItemsByName";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
+import useSWRfetcher from "@/helpers/useSWRfetcher";
 
 function EventPage() {
 	const GET_ALL_EVENTS = process.env.NEXT_PUBLIC_GET_ALL_EVENTS;
 
-	const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-	const { data, isLoading, error } = useSWR(GET_ALL_EVENTS, fetcher);
+	const { data, isLoading, error } = useSWR(GET_ALL_EVENTS, useSWRfetcher);
 
 	const [eventsSearchInput, setEventsSearchInput] = useState("");
 

@@ -13,17 +13,18 @@ import { FaInstagram } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import useOutsideClick from "@/app/hooks/useOutsideClick";
 import ComingSoonBanner from "@/components/ComingSoonBanner";
+import useSWRfetcher from "@/helpers/useSWRfetcher";
 // import getMonthDifference from "@/helpers/getMonthDifference";
 // import hrefValidator from "@/helpers/hrefValidator";
 // import weekSchedule from "@/helpers/weekSchedule";
 import useSWR from "swr";
 
 const EventDetailsPage = ({ params }) => {
-	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
 
-	// const { data, isLoading, error } = useSWR(`https://geteventbyid-qh42lmu4jq-uc.a.run.app/${params.slug}`, fetcher);
+	const { data, isLoading, error } = useSWR(`${GET_EVENT_BY_ID}/${params.slug}`, useSWRfetcher);
 
-	// console.log("🚀 ~ EventDetailsPage ~ data:", data);
+	console.log("🚀 ~ EventDetailsPage ~ data:", data);
 	const [open, isOpen] = useState(false);
 
 	// const handleSubmitEvent = (event) => {

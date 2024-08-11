@@ -57,7 +57,7 @@ const EventCard = ({ handleShowBanner, eventData }) => {
 		// 	{showEventMoreInfo && <EventCardMoreInfoBanner showEventMoreInfo={showEventMoreInfo} handleShowEventMoreInfo={handleShowMoreInfo} eventData={eventData} />}
 		// </>
 		<>
-			<Link target="_blank" href="/events/[id]" as={`/events/${eventData.itemId}`} className="relative animate-fade animate-fill-both transition-transform ease-in-out duration duration-200 hover:scale-105 h-80 flex flex-col justify-end">
+			<Link target="_blank" href="/events/[id]" as={`/events/${eventData.itemId}`} className="relative animate-fade transition-transform ease-in-out duration-200 hover:scale-105 h-80 flex flex-col justify-end">
 				<Image src={eventImageUrl} alt={eventDetails.title} width={340} height={100} className="opacity-60 absolute w-full h-full rounded-2xl bg-center bg-cover object-cover" />
 				<div className="mb-5 px-3 py-4 mx-5 rounded-2xl glass_background text-zinc-100  flex flex-col">
 					<p className="flex items-center text-sm text-slate-300">
