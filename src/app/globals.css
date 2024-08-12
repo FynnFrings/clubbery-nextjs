@@ -15,19 +15,19 @@ body {
 }
 
 .clubbery_main_button {
-	@apply px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4];
+	@apply px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4] text-center;
 }
 
 .clubbery_main_sm_button {
-	@apply px-3 py-2 rounded-xl bg-[#CC7503] text-[#F0FDF4];
+	@apply px-3 py-2 rounded-xl bg-[#CC7503] text-[#F0FDF4] text-center;
 }
 
 .clubbery_secondary_button {
-	@apply px-5 py-3 rounded-2xl bg-gray-500 text-[#F0FDF4];
+	@apply px-5 py-3 rounded-2xl bg-gray-500 text-[#F0FDF4] text-center;
 }
 
 .clubbery_secondary_sm_button {
-	@apply px-3 py-2 rounded-xl bg-gray-500 text-[#F0FDF4];
+	@apply px-3 py-2 rounded-xl bg-gray-500 text-[#F0FDF4] text-center;
 }
 
 .glass_background {

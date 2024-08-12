@@ -7,7 +7,7 @@ import convertLongDateToShortDate from "@/helpers/convertLongDatetoShortDate.js"
 import Link from "next/link";
 
 const EventCard = ({ handleShowBanner, eventData }) => {
-	const [showEventMoreInfo, setShowEventMoreInfo] = useState(false);
+	// const [showEventMoreInfo, setShowEventMoreInfo] = useState(false);
 
 	// const handleShowMoreInfo = () => {
 	// 	setShowEventMoreInfo(!showEventMoreInfo);
@@ -23,9 +23,9 @@ const EventCard = ({ handleShowBanner, eventData }) => {
 
 	const shortDate = convertLongDateToShortDate(convertedDate.openDate);
 
-	useEffect(() => {
-		showEventMoreInfo ? window.document.getElementById("body").classList.add("overflow-hidden") : window.document.getElementById("body").classList.remove("overflow-hidden");
-	}, [showEventMoreInfo]);
+	// useEffect(() => {
+	// 	showEventMoreInfo ? window.document.getElementById("body").classList.add("overflow-hidden") : window.document.getElementById("body").classList.remove("overflow-hidden");
+	// }, [showEventMoreInfo]);
 
 	// const EventCardMoreInfoBanner = dynamic(() => import("@/components/Event/EventCardMoreInfo"));
 

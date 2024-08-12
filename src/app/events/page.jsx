@@ -1,4 +1,5 @@
 "use client";
+
 import ComingSoonBanner from "@/components/ComingSoonBanner";
 import ErrorComponent from "@/components/ErrorComponent";
 import EventCard from "@/components/Event/EventCard";

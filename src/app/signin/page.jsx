@@ -37,7 +37,7 @@ const Signup = () => {
 					<h2 className="text-center text-zinc-100 text-2xl">Haben Sie schon ein Konto?</h2>
 					<div className="w-full flex justify-center">
 						<button onClick={signInGoogle}>
-							<Image src={"/buttons/google_signup.svg"} alt="Sign up with Google" width={200} height={100} />
+							<Image src={"/buttons/google_signin.svg"} alt="Sign up with Google" width={200} height={100} />
 						</button>
 					</div>
 

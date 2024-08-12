@@ -1,29 +1,33 @@
 "use client";
 
+import ErrorComponent from "@/components/ErrorComponent";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 const User = () => {
-	const session = useSession({
-		// required: true,
-		// onUnauthenticated() {
-		// 	redirect("/signin");
-		// },
+	const { data: session, status } = useSession({
+		required: true,
+		onUnauthenticated() {
+			redirect("/signin");
+		},
 	});
 
-	const userName = session?.data ? session.data.user.name || session.data.user.email : "";
+	const userName = session ? session.user.name || session.user.email : "";
 
 	const logOut = () => {
 		signOut({ callbackUrl: "/" });
 	};
 
-	console.log("🚀 ~ User ~ session:", session);
+	if (status === "loading") return <LoadingSpinner />;
+
+	if (status === "unauthenticated") return <ErrorComponent />;
 
 	return (
 		<>
 			<div className="w-full h-screen flex flex-col justify-center items-center gap-5">
 				<p className="text-white text-3xl font-semibold">Herzlich wilkommen, {userName}</p>
-				<p className="text-white text-lg">Hier findest du deine Lieblignsevents!</p>
+				<p className="text-white text-lg">Hier findest du deine Lieblingsevents!</p>
 				<button className="clubbery_main_button hover_button_animation" onClick={logOut}>
 					Abmelden
 				</button>

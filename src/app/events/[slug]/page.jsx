@@ -2,29 +2,61 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import InteractiveMap from "@/components/InteractiveMap";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { RiBuilding4Fill } from "react-icons/ri";
 import { AiFillPieChart } from "react-icons/ai";
 import { IoPeople } from "react-icons/io5";
 import { CgBrowser } from "react-icons/cg";
+import { BiSolidCoupon } from "react-icons/bi";
 import { FaInstagram } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import useOutsideClick from "@/app/hooks/useOutsideClick";
 import ComingSoonBanner from "@/components/ComingSoonBanner";
-import useSWRfetcher from "@/helpers/useSWRfetcher";
+import EventTicket from "@/components/Event/EventTicket";
 // import getMonthDifference from "@/helpers/getMonthDifference";
 // import hrefValidator from "@/helpers/hrefValidator";
 // import weekSchedule from "@/helpers/weekSchedule";
 import useSWR from "swr";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorComponent from "@/components/ErrorComponent";
+import convertUnixDateToFullDate from "@/helpers/convertUnixDateFullDate";
 
 const EventDetailsPage = ({ params }) => {
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
 
-	const { data, isLoading, error } = useSWR(`${GET_EVENT_BY_ID}/${params.slug}`, useSWRfetcher);
+	const fetcher = (...args) =>
+		fetch(...args, {
+			method: "post",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: params.slug }),
+		}).then((res) => res.json());
 
-	console.log("🚀 ~ EventDetailsPage ~ data:", data);
+	const { data, isLoading, error } = useSWR(GET_EVENT_BY_ID, fetcher);
+
+	const eventInfo = data ? data : null;
+
+	const eventDetails = data && data?.details;
+
+	const ticketList = data && data?.ticketList;
+
+	const eventImage = data && data.images[0];
+
+	const eventLocation = data && data.eventLocation;
+
+	const convertedTimeFrame = eventInfo && convertUnixDateToFullDate(eventInfo.timeFrame);
+
+	const calculateTotalAmount = (ticketList) => {
+		return ticketList.reduce((total, ticket) => {
+			return total + ticket.totalAvailableTicketAmount;
+		}, 0);
+	};
+
+	const totalAmountOfTickets = useMemo(() => ticketList && calculateTotalAmount(ticketList), [ticketList]);
+
 	const [open, isOpen] = useState(false);
 
 	// const handleSubmitEvent = (event) => {
@@ -84,15 +116,19 @@ const EventDetailsPage = ({ params }) => {
 		isOpen(false);
 	}
 
+	if (isLoading) return <LoadingSpinner />;
+
+	if (error) return <ErrorComponent />;
+
 	return (
 		<>
 			<div className="px-10 py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
-				<Image className="flex justify-center items-center h-56 md:col-span-2 object-cover rounded-lg w-full" src={"/party.webp"} alt="business_image" width={976} height={350} loading="lazy" />
+				<Image className="flex justify-center items-center h-56 md:col-span-2 object-cover rounded-lg w-full" src={eventImage.url} alt={eventImage.path} width={976} height={350} priority />
 
 				<div>
-					<h1 className="text-2xl">Event name</h1>
-					<p>Event Category</p>
-					<p className="mt-4 opacity-60">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui, incidunt asperiores libero illo necessitatibus animi assumenda eius aspernatur iste at, ipsa nemo doloribus voluptatibus. Vitae fugit corrupti eaque ut alias!</p>
+					<h1 className="text-2xl">{eventDetails.title}</h1>
+					<p>{eventInfo.categoryName}</p>
+					<p className="mt-4 opacity-60">{eventDetails.description}</p>
 				</div>
 
 				<div className="flex flex-col justify-center items-center md:flex-row md:justify-end md:items-end">
@@ -113,69 +149,80 @@ const EventDetailsPage = ({ params }) => {
 						<h2 className="text-2xl mb-6">Information</h2>
 						<p className="flex items-center mb-4 text-lg">
 							<RiBuilding4Fill className="mr-3 text-clubbery-orange" size={28} />
-							Event
+							{eventInfo.creatorName}
 						</p>
 						<p className="flex items-center mb-4 text-lg">
 							<AiFillPieChart className="mr-3 text-clubbery-orange" size={28} />
-							Event
+							{eventInfo.categoryName}
 						</p>
 						<p className="flex items-center mb-4 text-lg">
-							<IoPeople className="mr-3 w-7 h-7 text-clubbery-orange" /> <span>seit 2 Monate Mitglied der Clubbery App</span>
+							<BiSolidCoupon className="mr-3 text-clubbery-orange" size={28} />
+							{totalAmountOfTickets <= 0 ? "Alle Ticket sind ausverkauft" : `${totalAmountOfTickets} Ticket verfügbar`}
 						</p>
+						{/* <p className="flex items-center mb-4 text-lg">
+							<IoPeople className="mr-3 w-7 h-7 text-clubbery-orange" /> <span>seit 2 Monate Mitglied der Clubbery App</span>
+						</p> */}
 					</div>
 
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg w-full md:2-1/2">
 						<h2 className="text-2xl mb-6">Öffnungszeiten</h2>
-						<p>Montag: 19:00 - 20:00</p>
-						<p>Dienstag: 19:00 - 20:00</p>
+						<p className="text-xl">
+							{convertedTimeFrame.openTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.openDate}&nbsp;&mdash;&nbsp;{convertedTimeFrame.closeTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.closeDate}
+						</p>
 						{/* {weekSchedule(business.openingHourPeriods != null ? business.openingHourPeriods : business.dayList)} */}
 					</div>
 				</div>
 
 				<div className="col-span-2 p-6 bg-white bg-opacity-10 text-white rounded-lg">
 					<h2 className="text-2xl mb-6">Standort</h2>
-					<InteractiveMap location={"Zouk Germany"} latitude={48.7640493} longitude={9.164021800000002} />
-					<div className="flex flex-col items-start md:items-center md:flex-row mt-4">
-						<Link target="_blank" rel="noreferrer" href={`https://maps.google.com/?q=123`} className="bg-clubbery-orange text-white py-2 px-4 rounded-md mb-4 md:mb-0 md:mr-4">
-							Route planen
+					<InteractiveMap location={eventLocation.locationTitle} latitude={eventLocation.latitude} longitude={eventLocation.longitude} />
+					<div className="flex flex-col gap-2 items-start md:items-center md:flex-row mt-4">
+						<Link target="_blank" rel="noreferrer" href={`https://maps.google.com/?q=${eventLocation.locationTitle}`}>
+							<button className="clubbery_main_sm_button hover_button_animation">Route planen</button>
 						</Link>
-						{/* <span>{business.formattedAddress ?? business.location}</span> */}
+						<span>{eventLocation.locationAddress}</span>
 					</div>
 				</div>
 
-				<div className="col-span-2 p-6 bg-white bg-opacity-10 text-white rounded-lg">
-					<h2 className="text-2xl mb-6">Soziale Medien</h2>
-					<div className="flex items-center mb-6">
-						<CgBrowser className="mr-4 h-10 w-10 text-clubbery-orange" />
-						<div>
-							<h2 className="text-xl">Website</h2>
-							<Link target="_blank" rel="noreferrer" href={`/*`} className="text-yellow-400">
-								Unbekannt
-							</Link>
-						</div>
-					</div>
-					{true && (
+				{eventInfo.website && (
+					<div className="col-span-2 p-6 bg-white bg-opacity-10 text-white rounded-lg">
+						<h2 className="text-2xl mb-6">Soziale Medien</h2>
 						<div className="flex items-center mb-6">
-							<FaInstagram className="mr-4 h-10 w-10 text-clubbery-orange" />
+							<CgBrowser className="mr-4 h-10 w-10 text-clubbery-orange" />
 							<div>
-								<h2 className="text-xl">Instagram</h2>
-								<Link target="_blank" rel="noreferrer" href={`https://www.instagram.com/event/`} className="text-yellow-400">
-									@Event
+								<h2 className="text-xl">Website</h2>
+								<Link target="_blank" rel="noreferrer" href={`/*`} className="text-yellow-400">
+									Unbekannt
 								</Link>
 							</div>
 						</div>
-					)}
-					{true && (
-						<div className="flex items-center ">
-							<FaWhatsapp className="mr-4 h-10 w-10 text-clubbery-orange" />
-							<div>
-								<h2 className="text-xl">WhatsApp</h2>
-								<Link target="_blank" rel="noreferrer" href={`https://wa.me/event`} className="text-yellow-400">
-									Event
-								</Link>
+						{true && (
+							<div className="flex items-center mb-6">
+								<FaInstagram className="mr-4 h-10 w-10 text-clubbery-orange" />
+								<div>
+									<h2 className="text-xl">Instagram</h2>
+									<Link target="_blank" rel="noreferrer" href={`https://www.instagram.com/event/`} className="text-yellow-400">
+										@Event
+									</Link>
+								</div>
 							</div>
-						</div>
-					)}
+						)}
+						{true && (
+							<div className="flex items-center ">
+								<FaWhatsapp className="mr-4 h-10 w-10 text-clubbery-orange" />
+								<div>
+									<h2 className="text-xl">WhatsApp</h2>
+									<Link target="_blank" rel="noreferrer" href={`https://wa.me/event`} className="text-yellow-400">
+										Event
+									</Link>
+								</div>
+							</div>
+						)}
+					</div>
+				)}
+				<div className="col-span-2 p-6 bg-white bg-opacity-10 text-white rounded-lg">
+					<h2 className="text-2xl mb-6">Tickets</h2>
+					<div className=" grid grid-cols-1 md:grid-cols-2 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} />)}</div>
 				</div>
 			</div>
 			{showBanner && <ComingSoonBanner />}
