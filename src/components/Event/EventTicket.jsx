@@ -10,6 +10,7 @@ const EventTicket = ({ ticket, handleOnClick }) => {
 					<p className="text-base md:text-lg font-medium">Preis: {ticket.price} €</p>
 					<p className="text-md text-zinc-300 mt-2 md:mt-0">Verfügbar: {ticket.totalAvailableTicketAmount}</p>
 				</div>
+
 				<button onClick={handleOnClick} className="clubbery_main_button hover_button_animation">
 					<Link href={""}>Kaufen</Link>
 				</button>
