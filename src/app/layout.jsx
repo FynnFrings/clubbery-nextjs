@@ -1,8 +1,13 @@
+"use client";
+
 import Layout from "@/components/layout";
 import { Poppins } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import SessionProvider from "./SessionProvider";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { Suspense } from "react";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -14,9 +19,12 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" className={poppins.className}>
 			<body id="body">
-				{/* <Script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"  /> */}
 				<SessionProvider>
-					<Layout>{children}</Layout>
+					<Layout>
+						<Suspense fallback={<LoadingSpinner />}>
+							<Provider store={store}>{children}</Provider>
+						</Suspense>
+					</Layout>
 				</SessionProvider>
 			</body>
 		</html>

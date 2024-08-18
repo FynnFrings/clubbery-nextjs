@@ -6,6 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { useScrollPosition } from "@/app/hooks/useScrollPosition";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
 	const [menu, setMenu] = useState(false);
@@ -13,7 +14,9 @@ const Header = () => {
 	const handleOnClick = () => {
 		setMenu(!menu);
 	};
-	// const device = useMobileDetect();
+
+	const { status } = useSession();
+
 	const scrollPosition = useScrollPosition();
 	return (
 		<header className="sticky top-0 z-20 mb-8 lg:mb-5">
@@ -42,11 +45,21 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
-					<li>
-						<Link href="/signin">
-							<p className="hover_text_animation">Anmelden</p>
-						</Link>
-					</li>
+
+					{status === "authenticated" ? (
+						<li>
+							<Link href="/profile">
+								<p className="hover_text_animation">Profil</p>
+							</Link>
+						</li>
+					) : (
+						<li>
+							<Link href="/auth/signin">
+								<p className="hover_text_animation">Anmelden</p>
+							</Link>
+						</li>
+					)}
+
 					<li className="hover_button_animation">
 						<Link target="_blank" href="https://apps.apple.com/de/app/clubbery/id6476625439" className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
 							Download Clubbery

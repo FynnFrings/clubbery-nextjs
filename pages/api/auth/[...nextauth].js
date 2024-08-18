@@ -7,14 +7,28 @@ import { auth } from "@/app/firebase";
 
 export const authOptions = {
 	pages: {
-		signIn: "/signin",
+		signIn: "/auth/signin",
 	},
 	callbacks: {
-		async signIn({ account, profile }) {
-			if (account.provider === "google") {
-				return profile.email_verified && profile.email.endsWith("@gmail.com");
-			}
+		async signIn({ user, account, profile, email, credentials }) {
 			return true; // Do different verification for other providers that don't have `email_verified`
+		},
+
+		async jwt({ token, account, profile }) {
+			// console.log("🚀 ~ jwt ~ profile:", profile);
+			// console.log("🚀 ~ jwt ~ account:", account);
+			// console.log("🚀 ~ jwt ~ token:", token);
+			// Persist the OAuth access_token and or the user id to the token right after signin
+
+			return token;
+		},
+
+		async session({ session, token, user }) {
+			// console.log("🚀 ~ session ~ user:", user);
+			// console.log("🚀 ~ session ~ token:", token);
+			// console.log("🚀 ~ session ~ session:", session);
+
+			return session;
 		},
 	},
 	providers: [

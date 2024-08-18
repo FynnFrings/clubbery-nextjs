@@ -1,18 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
-import { auth } from "../firebase";
-import { redirect } from "next/dist/server/api-utils";
+import { auth } from "../../firebase";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Signup = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	const { status } = useSession();
+
+	useEffect(() => {
+		if (status === "authenticated") {
+			redirect("/profile");
+		}
+	}, [status]);
+
 	const signInGoogle = () => {
-		signIn("google", { callbackUrl: "/user" });
+		signIn("google", { callbackUrl: "/profile" });
 	};
 
 	const signUpWithCredentails = async (event) => {
@@ -25,11 +34,13 @@ const Signup = () => {
 
 			sendEmailVerification(auth.currentUser);
 
-			redirect("/user");
+			redirect("/profile");
 		} catch (error) {
 			console.log("🚀 ~ error:", error);
 		}
 	};
+
+	if (status === "loading") return <LoadingSpinner />;
 
 	return (
 		<>
@@ -41,7 +52,7 @@ const Signup = () => {
 					<div className="-z-10 absolute -bottom-5 right-14 lg:-bottom-5 lg:right-28 xl:-bottom-5 xl:right-32 w-24 h-24 lg:w-36 lg:h-36 bg-sky-500 rounded-full blur-3xl"></div>
 					<Image className="z-10" src="/iphonemockupsclubbery.png" alt="phone" width={1000} height={1300} />
 				</div>
-				<div className="h-fit w-full lg:w-3/4 xl:w-1/3 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
+				<div className="h-fit w-full lg:w-1/2 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
 					<h2 className="text-center text-zinc-100 text-2xl">Registrieren Sie sich mit:</h2>
 					<div className="w-full flex justify-center">
 						<button onClick={signInGoogle}>

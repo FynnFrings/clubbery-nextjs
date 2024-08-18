@@ -2,30 +2,42 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Signup = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	const { status } = useSession();
+
+	useEffect(() => {
+		if (status === "authenticated") {
+			redirect("/profile");
+		}
+	}, [status]);
+
 	const signInGoogle = () => {
-		signIn("google", { callbackUrl: "/user" });
+		signIn("google", { callbackUrl: "/profile" });
 	};
 
 	const signInWithCredentails = async (event) => {
 		event.preventDefault();
 
 		try {
-			await signIn("credentials", { email, password, redirect: true, callbackUrl: "/user" });
+			await signIn("credentials", { email, password, redirect: true, callbackUrl: "/profile" });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
+	if (status === "loading") return <LoadingSpinner />;
+
 	return (
 		<>
-			<div className="w-full flex justify-around items-center">
+			<div className="w-full flex justify-between items-center">
 				<div className="hidden lg:block relative">
 					<div className="-z-10 absolute top-6 left-36 lg:top-6 lg:left-36 xl:top-6 xl:left-48 w-24 h-24 lg:w-36 lg:h-36 bg-violet-500 rounded-full blur-3xl"></div>
 					<div className="-z-10 absolute top-24 right-8 lg:top-36 lg:right-6 xl:top-44 xl:right-8 w-24 h-24 lg:w-36 lg:h-36 bg-orange-400 rounded-full blur-3xl"></div>
@@ -33,7 +45,7 @@ const Signup = () => {
 					<div className="-z-10 absolute -bottom-5 right-14 lg:-bottom-5 lg:right-28 xl:-bottom-5 xl:right-32 w-24 h-24 lg:w-36 lg:h-36 bg-sky-500 rounded-full blur-3xl"></div>
 					<Image className="z-10" src="/iphonemockupsclubbery.png" alt="phone" width={1000} height={1300} />
 				</div>
-				<div className="h-fit w-full lg:w-3/4 xl:w-1/3 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
+				<div className="h-fit w-full lg:w-1/2 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
 					<h2 className="text-center text-zinc-100 text-2xl">Haben Sie schon ein Konto?</h2>
 					<div className="w-full flex justify-center">
 						<button onClick={signInGoogle}>
@@ -54,7 +66,7 @@ const Signup = () => {
 						</button>
 					</form>
 					<div className="flex justify-center w-full">
-						<Link href="/signup" className="w-fit">
+						<Link href="/auth/signup" className="w-fit">
 							<p className="hover_text_animation text-zinc-100">Konto erstellen</p>
 						</Link>
 					</div>
