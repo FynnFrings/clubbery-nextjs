@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import { auth } from "../firebase";
 import ConfirmationEmail from "@/components/Auth/ConfirmationEmail";
 import { useEffect } from "react";
+import useAddUserToFirestore from "@/helpers/useAddUserToFirestore";
+import useFirebaseAut from "@/helpers/useFirebaseAut";
 
 const User = () => {
 	const { data: session, status } = useSession({
@@ -15,6 +17,8 @@ const User = () => {
 			redirect("/auth/signin");
 		},
 	});
+
+	useAddUserToFirestore();
 
 	const checkIfEmailVerifiedCredentials = () => {
 		if (status === "authenticated" && !auth?.currentUser) return true;
