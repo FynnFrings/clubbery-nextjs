@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 const User = () => {
 	const router = useRouter();
 	const { user, status } = useAuth();
-	console.log("🚀 ~ User ~ user:", user);
 
 	const displayUserName = user?.displayName ?? user?.email;
 

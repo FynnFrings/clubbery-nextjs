@@ -13,10 +13,13 @@ const Signup = () => {
 	const [password, setPassword] = useState("");
 
 	useEffect(() => {
-		const response = handleRedirectResult();
-		if (response) {
-			router.push("/profile");
-		}
+		const handleAsynGetResultFromRedict = async () => {
+			const response = await handleRedirectResult();
+			if (response) {
+				router.push("/profile");
+			}
+		};
+		handleAsynGetResultFromRedict();
 	});
 
 	const signInGoogle = async () => {
