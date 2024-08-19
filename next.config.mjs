@@ -12,6 +12,16 @@ const nextConfig = {
 			},
 		],
 	},
+	async rewrites() {
+		return {
+			beforeFiles: [
+				{
+					source: "/__/auth/:path*",
+					destination: `https://clubbery-dev.firebaseapp.com/__/auth/:path*`,
+				},
+			],
+		};
+	},
 };
 
 export default nextConfig;

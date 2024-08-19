@@ -13,7 +13,10 @@ const Signup = () => {
 	const [password, setPassword] = useState("");
 
 	useEffect(() => {
-		handleRedirectResult();
+		const response = handleRedirectResult();
+		if (response) {
+			router.push("/profile");
+		}
 	});
 
 	const signInGoogle = async () => {
@@ -49,7 +52,7 @@ const Signup = () => {
 				</div>
 				<div className="h-fit w-full lg:w-1/2 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
 					<h2 className="text-center text-zinc-100 text-2xl">Haben Sie schon ein Konto?</h2>
-					{/* <div className="w-full flex justify-center">
+					<div className="w-full flex justify-center">
 						<button onClick={signInGoogle}>
 							<Image src={"/buttons/google_signin.svg"} alt="Sign up with Google" width={200} height={100} />
 						</button>
@@ -59,7 +62,7 @@ const Signup = () => {
 						<span className="w-1/4 border border-white"></span>
 						<span className="font-light text-zinc-100 text-2xl mx-2">Oder</span>
 						<span className="w-1/4 border border-white"></span>
-					</p> */}
+					</p>
 					<form onSubmit={signInWithCredentails} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
 						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={(e) => setEmail(e.target.value)} />
 						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="password" placeholder="Passwort" required onChange={(e) => setPassword(e.target.value)} />
