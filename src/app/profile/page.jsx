@@ -2,66 +2,44 @@
 
 import ErrorComponent from "@/components/ErrorComponent";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { signOut, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { auth } from "../firebase";
 import ConfirmationEmail from "@/components/Auth/ConfirmationEmail";
-import { useEffect } from "react";
-import useAddUserToFirestore from "@/helpers/useAddUserToFirestore";
-import useFirebaseAut from "@/helpers/useFirebaseAut";
+import useAuth from "../hooks/useAuth";
+import { userSignOut } from "../libs/getAuth";
+import { useRouter } from "next/navigation";
 
 const User = () => {
-	const { data: session, status } = useSession({
-		required: true,
-		onUnauthenticated() {
-			redirect("/auth/signin");
-		},
-	});
+	const router = useRouter();
+	const { user, status } = useAuth();
+	console.log("🚀 ~ User ~ user:", user);
 
-	useAddUserToFirestore();
+	const displayUserName = user?.displayName ?? user?.email;
 
-	const checkIfEmailVerifiedCredentials = () => {
-		if (status === "authenticated" && !auth?.currentUser) return true;
-		if (status === "authenticated" && !auth.currentUser.emailVerified) return false;
-		return true;
+	const handleSignOut = async () => {
+		try {
+			await userSignOut();
+			router.push("/");
+		} catch (error) {
+			console.log(error);
+		}
 	};
-
-	const isEmailVerifiedCredentials = checkIfEmailVerifiedCredentials();
-
-	const userName = session ? session.user.name || session.user.email : "";
-
-	const handleSignOut = () => {
-		signOut({ callbackUrl: "/" });
-	};
-
-	const handleResetPassword = () => {
-		// Implement your password reset logic here
-	};
-
-	const isCredentialsUser = false;
 
 	if (status === "loading") return <LoadingSpinner />;
-
-	if (isEmailVerifiedCredentials === false) return <ConfirmationEmail email={userName} />;
-
-	if (status === "unauthenticated") return <ErrorComponent />;
-
-	console.log("🚀 ~ User ~ session:", session);
-
+	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;
+	if (status === "unauthenthicated") return <ErrorComponent />;
 	return (
 		<>
 			<div className="w-full min-h-screen flex flex-col items-center gap-8 p-6 md:p-12 text-white">
 				<div className="w-full max-w-4xl text-center">
-					<h1 className="text-2xl md:text-4xl font-semibold">Herzlich Willkommen, {userName}!</h1>
+					<h1 className="text-2xl md:text-4xl font-semibold">Herzlich Willkommen, {displayUserName}!</h1>
 					<p className="text-lg md:text-xl mt-4">Hier kannst du deine gespeicherten Events und gekauften Tickets ansehen.</p>
 				</div>
 
 				<div className="w-full max-w-4xl flex flex-col gap-6">
-					{isCredentialsUser && (
+					{/* {isCredentialsUser && (
 						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleResetPassword}>
 							Passwort zurücksetzen
 						</button>
-					)}
+					)} */}
 
 					<div className="w-full max-w-4xl flex flex-col gap-8 mt-8">
 						{/* Favorite Events Section */}

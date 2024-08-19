@@ -3,7 +3,6 @@
 import Layout from "@/components/layout";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import SessionProvider from "./SessionProvider";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Suspense } from "react";
 import { Provider } from "react-redux";
@@ -19,13 +18,11 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" className={poppins.className}>
 			<body id="body">
-				<SessionProvider>
-					<Layout>
-						<Suspense fallback={<LoadingSpinner />}>
-							<Provider store={store}>{children}</Provider>
-						</Suspense>
-					</Layout>
-				</SessionProvider>
+				<Layout>
+					<Suspense fallback={<LoadingSpinner />}>
+						<Provider store={store}>{children}</Provider>
+					</Suspense>
+				</Layout>
 			</body>
 		</html>
 	);
