@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect, useMemo } from "react";
-import InteractiveMap from "@/components/InteractiveMap";
+import { useState, useEffect, useMemo } from "react";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { RiBuilding4Fill } from "react-icons/ri";
 import { AiFillPieChart } from "react-icons/ai";
@@ -13,15 +12,13 @@ import { BiSolidCoupon } from "react-icons/bi";
 import { FaInstagram } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import useOutsideClick from "@/app/hooks/useOutsideClick";
-import ComingSoonBanner from "@/components/ComingSoonBanner";
-import EventTicket from "@/components/Event/EventTicket";
 // import getMonthDifference from "@/helpers/getMonthDifference";
 // import hrefValidator from "@/helpers/hrefValidator";
 // import weekSchedule from "@/helpers/weekSchedule";
 import useSWR from "swr";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorComponent from "@/components/ErrorComponent";
 import convertUnixDateToFullDate from "@/helpers/convertUnixDateFullDate";
+import loadable from "@loadable/component";
 
 const EventDetailsPage = ({ params }) => {
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
@@ -115,6 +112,11 @@ const EventDetailsPage = ({ params }) => {
 	function handleClickOutside() {
 		isOpen(false);
 	}
+
+	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
+	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
+	const InteractiveMap = loadable(() => import("@/components/InteractiveMap"));
+	const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
 
 	if (isLoading) return <LoadingSpinner />;
 

@@ -4,6 +4,8 @@ import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
 import { useRouter } from "next/navigation";
 import loadable from "@loadable/component";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorComponent from "@/components/ErrorComponent";
 
 const User = () => {
 	const router = useRouter();
@@ -13,16 +15,14 @@ const User = () => {
 
 	const handleSignOut = async () => {
 		try {
-			await userSignOut();
 			router.push("/");
+			await userSignOut();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
 	const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
-	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
 
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;

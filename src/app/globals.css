@@ -30,6 +30,10 @@ body {
 	@apply px-3 py-2 rounded-xl bg-gray-500 text-[#F0FDF4] text-center;
 }
 
+.clubbery_input {
+	@apply w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none text-zinc-100;
+}
+
 .glass_background {
 	background: rgba(56, 46, 46, 0.79);
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

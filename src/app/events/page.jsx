@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import useSWR from "swr";
 import useSWRfetcher from "@/helpers/useSWRfetcher";
 import loadable from "@loadable/component";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function EventPage() {
 	const GET_ALL_EVENTS = process.env.NEXT_PUBLIC_GET_ALL_EVENTS;
@@ -34,7 +35,6 @@ function EventPage() {
 			}, 4000);
 	}, [showBanner]);
 
-	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
 	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
 	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
 	const EventCard = loadable(() => import("@/components/Event/EventCard"));
@@ -53,11 +53,7 @@ function EventPage() {
 				<div>
 					<SearchField handleSearchInputChange={handleInputSearchChange} searchInput={eventsSearchInput} searchIputPlaceholder={"Events suchen"} />
 				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mt-5">
-					{sortedEventsBySearchInput.map((eventData) => (
-						<EventCard eventData={eventData} key={eventData.id} handleShowBanner={handleShowBanner} />
-					))}
-				</div>
+				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mt-5">{sortedEventsBySearchInput && sortedEventsBySearchInput.map((eventData) => <EventCard eventData={eventData} key={eventData.id} handleShowBanner={handleShowBanner} />)}</div>
 			</div>
 			{showBanner && <ComingSoonBanner />}
 		</>
