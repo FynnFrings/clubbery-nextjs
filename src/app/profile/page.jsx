@@ -1,15 +1,24 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
 import { useRouter } from "next/navigation";
 import loadable from "@loadable/component";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorComponent from "@/components/ErrorComponent";
+import { useSelector } from "react-redux";
 
 const User = () => {
 	const router = useRouter();
+
 	const { user, status } = useAuth();
+
+	const provider = useSelector((state) => state.auth.provider);
+
+	const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+
+	const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
 
 	const displayUserName = user?.displayName ?? user?.email;
 
@@ -21,8 +30,36 @@ const User = () => {
 			console.log(error);
 		}
 	};
+	const [showAccountDeletionModal, setShowAccountDeletionModal] = useState(false);
+
+	const handleShowAccountDeletionModal = () => {
+		setShowAccountDeletionModal(true);
+	};
+
+	const handleCloseAccountDeletionModal = () => {
+		setShowAccountDeletionModal(false);
+	};
+
+	const handleShowChangePasswordBanner = () => {
+		setShowChangePasswordModal(true);
+	};
+
+	const handleCloseModal = () => {
+		setShowChangePasswordModal(false);
+	};
+
+	const handleShowEmailModal = () => {
+		setShowChangeEmailModal(true);
+	};
+
+	const handleCloseEmailModal = () => {
+		setShowChangeEmailModal(false);
+	};
 
 	const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
+	const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
+	const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
+	const AccountDeletionModal = loadable(() => import("@/components/Auth/DeleteUserAccountModal"));
 
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;
@@ -37,11 +74,22 @@ const User = () => {
 				</div>
 
 				<div className="w-full max-w-4xl flex flex-col gap-6">
-					{/* {isCredentialsUser && (
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleResetPassword}>
-							Passwort zurücksetzen
+					<div className="w-full flex flex-col md:flex-row gap-5">
+						{provider && (
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowChangePasswordBanner}>
+								Passwort zurücksetzen
+							</button>
+						)}
+						{provider && (
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowEmailModal}>
+								E-mail ändern
+							</button>
+						)}
+
+						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowAccountDeletionModal}>
+							Konto entfernen
 						</button>
-					)} */}
+					</div>
 
 					<div className="w-full max-w-4xl flex flex-col gap-8 mt-8">
 						{/* Favorite Events Section */}
@@ -68,6 +116,10 @@ const User = () => {
 					</button>
 				</div>
 			</div>
+
+			{showChangePasswordModal && <ChangePasswordModal onClose={handleCloseModal} user={user} />}
+			{showChangeEmailModal && <ChangeEmailModal onClose={handleCloseEmailModal} />}
+			{showAccountDeletionModal && <AccountDeletionModal onClose={handleCloseAccountDeletionModal} />}
 		</>
 	);
 };

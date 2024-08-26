@@ -22,7 +22,6 @@ const recoverPassword = () => {
 			await sendPasswordResetEmail(auth, email);
 			setMessage("Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.");
 		} catch (error) {
-			console.log("🚀 ~ handlePasswordReset ~ error:", error);
 			const errorMessage = convertFirebaseErrors(error.code);
 			setError(errorMessage);
 		} finally {
@@ -31,18 +30,20 @@ const recoverPassword = () => {
 	};
 
 	return (
-		<form onSubmit={handlePasswordReset} className="w-full h-screen flex flex-col justify-center items-center gap-5">
-			<p className="text-white text-3xl font-semibold">Passwort zurücksetzen</p>
-			<p className="text-white text-lg">Gib deine E-Mail-Adresse ein, um dein Passwort zurückzusetzen:</p>
-			<div className="w-auto">
-				<input type="email" placeholder="E-Mail-Adresse" className="clubbery_input" value={email} onChange={(e) => setEmail(e.target.value)} />
-			</div>
-			{message && <p className="text-green-400 text-lg">{message}</p>}
-			{error && <p className="text-red-400 text-lg">{error}</p>}
-			<button className="clubbery_main_button hover_button_animation" type="submit" disabled={loading}>
-				{loading ? "Senden..." : "Passwort zurücksetzen"}
-			</button>
-		</form>
+		<>
+			<form onSubmit={handlePasswordReset} className="w-full h-screen flex flex-col justify-center items-center gap-5">
+				<p className="text-white text-3xl font-semibold">Passwort zurücksetzen</p>
+				<p className="text-white text-lg">Gib deine E-Mail-Adresse ein, um dein Passwort zurückzusetzen:</p>
+				<div className="w-full md:w-1/2 lg:w-1/3">
+					<input type="email" placeholder="E-Mail-Adresse" className="clubbery_input lg:py-4" value={email} onChange={(e) => setEmail(e.target.value)} />
+				</div>
+				{message && <p className="text-green-400 text-lg">{message}</p>}
+				{error && <p className="text-red-400 text-lg">{error}</p>}
+				<button className="clubbery_main_button hover_button_animation" type="submit" disabled={loading}>
+					{loading ? "Senden..." : "Passwort zurücksetzen"}
+				</button>
+			</form>
+		</>
 	);
 };
 

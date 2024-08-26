@@ -7,15 +7,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { setAuthProvider } from "@/app/store/useSlice";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Signup = () => {
 	const router = useRouter();
+
+	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	const [errorAuthMessage, setErrorAuthMessage] = useState("");
 	const [errorAuthMessageBanner, setErrorAuthMessageBanner] = useState(false);
+
+	const [showPassword, setShowPassword] = useState(false); // State for showing/hiding password
 
 	const handleShowAuthErrorMessage = () => {
 		!errorAuthMessageBanner && setErrorAuthMessageBanner(true);
@@ -34,6 +41,8 @@ const Signup = () => {
 			await signInWithGoogle();
 		} catch (error) {
 			console.log(error);
+			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+			handleShowAuthErrorMessage();
 		}
 	};
 
@@ -44,6 +53,7 @@ const Signup = () => {
 			try {
 				const response = await signInWithEmail(email, password);
 				if (response === "success") {
+					dispatch(setAuthProvider("credentials"));
 					router.push("/profile");
 				} else {
 					const errorMessage = convertFirebaseErrors(response);
@@ -51,7 +61,8 @@ const Signup = () => {
 					handleShowAuthErrorMessage();
 				}
 			} catch (error) {
-				console.log(error);
+				setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+				handleShowAuthErrorMessage();
 			}
 		},
 		[email, password]
@@ -73,6 +84,7 @@ const Signup = () => {
 				if (response === null) return;
 
 				if (response === "success") {
+					dispatch(setAuthProvider("google"));
 					router.push("/profile");
 				} else {
 					const errorMessage = convertFirebaseErrors(response);
@@ -81,6 +93,8 @@ const Signup = () => {
 				}
 			} catch (error) {
 				console.log(error);
+				setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+				handleShowAuthErrorMessage();
 			}
 		};
 		handleAsynGetResultFromRedict();
@@ -111,7 +125,12 @@ const Signup = () => {
 					</p>
 					<form onSubmit={signInWithCredentails} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
 						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={handleEmailChange} />
-						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="password" placeholder="Passwort" required onChange={handlePasswordChange} />
+						<div className="relative w-full">
+							<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type={showPassword ? "text" : "password"} placeholder="Passwort" required onChange={handlePasswordChange} />
+							<button type="button" className="absolute inset-y-0 right-3 flex items-center text-gray-400" onClick={() => setShowPassword(!showPassword)}>
+								{showPassword ? <FaEye className="h-6 w-6" /> : <FaEyeSlash className="h-6 w-6" />}
+							</button>
+						</div>
 						<button disabled={!email || !password || errorAuthMessageBanner} className={`bg-[#CC7503] text-[#F0FDF4] w-4/5 py-2 rounded-xl font-medium text-xl hover:scale-95 transition duration-200`} type="submit">
 							Anmelden
 						</button>

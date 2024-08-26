@@ -6,8 +6,11 @@ import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { useScrollPosition } from "@/app/hooks/useScrollPosition";
+import useAuth from "@/app/hooks/useAuth";
 
 const Header = () => {
+	const { user } = useAuth();
+
 	const [menu, setMenu] = useState(false);
 
 	const handleOnClick = () => {
@@ -42,11 +45,19 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
-					<li>
-						<Link href="/auth/signin">
-							<p className="hover_text_animation">Anmelden</p>
-						</Link>
-					</li>
+					{user ? (
+						<li>
+							<Link onClick={() => handleOnClick()} href="/profile">
+								<p className="hover_text_animation">Profil</p>
+							</Link>
+						</li>
+					) : (
+						<li>
+							<Link onClick={() => handleOnClick()} href="/auth/signin">
+								<p className="hover_text_animation">Anmelden</p>
+							</Link>
+						</li>
+					)}
 					<li className="hover_button_animation">
 						<Link target="_blank" href="https://apps.apple.com/de/app/clubbery/id6476625439" className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4]">
 							Download Clubbery
@@ -81,11 +92,19 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
-					<li>
-						<Link onClick={() => handleOnClick()} href="/signin">
-							<p className="hover_text_animation">Anmelden</p>
-						</Link>
-					</li>
+					{user ? (
+						<li>
+							<Link onClick={() => handleOnClick()} href="/profile">
+								<p className="hover_text_animation">Profil</p>
+							</Link>
+						</li>
+					) : (
+						<li>
+							<Link onClick={() => handleOnClick()} href="/auth/signin">
+								<p className="hover_text_animation">Anmelden</p>
+							</Link>
+						</li>
+					)}
 					<li className="px-5 py-3 rounded-2xl bg-[#CC7503] text-[#F0FDF4] hover_button_animation">
 						<Link onClick={() => handleOnClick()} target="_blank" href="https://apps.apple.com/de/app/clubbery/id6476625439">
 							Download Clubbery
