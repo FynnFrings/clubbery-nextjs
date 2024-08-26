@@ -1,11 +1,9 @@
 "use client";
 
-import ErrorComponent from "@/components/ErrorComponent";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ConfirmationEmail from "@/components/Auth/ConfirmationEmail";
 import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
 import { useRouter } from "next/navigation";
+import loadable from "@loadable/component";
 
 const User = () => {
 	const router = useRouter();
@@ -22,9 +20,14 @@ const User = () => {
 		}
 	};
 
+	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
+	const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
+	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
+
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;
 	if (status === "unauthenthicated") return <ErrorComponent />;
+
 	return (
 		<>
 			<div className="w-full min-h-screen flex flex-col items-center gap-8 p-6 md:p-12 text-white">

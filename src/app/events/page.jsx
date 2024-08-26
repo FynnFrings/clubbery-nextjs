@@ -1,15 +1,12 @@
 "use client";
 
-import ComingSoonBanner from "@/components/ComingSoonBanner";
-import ErrorComponent from "@/components/ErrorComponent";
-import EventCard from "@/components/Event/EventCard";
 import SearchField from "@/components/InputForms/SearchField";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import filterItemsByName from "@/helpers/filterItemsByName";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 import useSWRfetcher from "@/helpers/useSWRfetcher";
+import loadable from "@loadable/component";
 
 function EventPage() {
 	const GET_ALL_EVENTS = process.env.NEXT_PUBLIC_GET_ALL_EVENTS;
@@ -36,6 +33,11 @@ function EventPage() {
 				setShowBanner(false);
 			}, 4000);
 	}, [showBanner]);
+
+	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
+	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
+	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
+	const EventCard = loadable(() => import("@/components/Event/EventCard"));
 
 	if (isLoading) return <LoadingSpinner />;
 

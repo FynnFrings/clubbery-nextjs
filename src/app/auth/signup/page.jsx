@@ -25,7 +25,7 @@ const Signup = () => {
 
 	return (
 		<>
-			<div className="w-full flex justify-around items-center">
+			<div className="w-full flex justify-around items-center gap-36">
 				<div className="hidden lg:block relative">
 					<div className="-z-10 absolute top-6 left-36 lg:top-6 lg:left-36 xl:top-6 xl:left-48 w-24 h-24 lg:w-36 lg:h-36 bg-violet-500 rounded-full blur-3xl"></div>
 					<div className="-z-10 absolute top-24 right-8 lg:top-36 lg:right-6 xl:top-44 xl:right-8 w-24 h-24 lg:w-36 lg:h-36 bg-orange-400 rounded-full blur-3xl"></div>

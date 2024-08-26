@@ -9,6 +9,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@loadable/component": "^5.16.4",
 		"@reduxjs/toolkit": "^2.2.7",
 		"axios": "^1.6.8",
 		"firebase": "^10.12.5",

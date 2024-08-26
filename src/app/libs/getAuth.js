@@ -18,9 +18,12 @@ export const signInWithApple = () => {
 export const signInWithEmail = async (email, password) => {
 	try {
 		const response = await signInWithEmailAndPassword(auth, email, password);
-		return response;
+		if (response) {
+			return "success";
+		}
 	} catch (error) {
-		console.log(error);
+		console.log(error.code);
+		return error.code;
 	}
 };
 
@@ -42,13 +45,15 @@ export const userSignOut = () => {
 // Function to handle the result after redirect sign-in
 export const handleRedirectResult = async () => {
 	try {
-		const result = await getRedirectResult(auth);
-		console.log("🚀 ~ handleRedirectResult ~ result:", result);
-		if (result) {
-			// User signed in successfully
-			return result.user;
+		const response = await getRedirectResult(auth);
+		if (response === null) return null;
+
+		if (response) {
+			return "success";
 		}
 	} catch (error) {
 		console.error("Error during redirect result:", error);
+		console.log(error.code);
+		return error.code;
 	}
 };

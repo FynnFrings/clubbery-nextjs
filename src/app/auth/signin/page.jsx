@@ -1,10 +1,12 @@
 "use client";
 
 import { handleRedirectResult, signInWithEmail, signInWithGoogle } from "@/app/libs/getAuth";
+import ContactResponseMessage from "@/components/ContactResponseMessage";
+import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const Signup = () => {
 	const router = useRouter();
@@ -12,15 +14,20 @@ const Signup = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	useEffect(() => {
-		const handleAsynGetResultFromRedict = async () => {
-			const response = await handleRedirectResult();
-			if (response) {
-				router.push("/profile");
-			}
-		};
-		handleAsynGetResultFromRedict();
-	});
+	const [errorAuthMessage, setErrorAuthMessage] = useState("");
+	const [errorAuthMessageBanner, setErrorAuthMessageBanner] = useState(false);
+
+	const handleShowAuthErrorMessage = () => {
+		!errorAuthMessageBanner && setErrorAuthMessageBanner(true);
+	};
+
+	const handleEmailChange = useCallback((e) => {
+		setEmail(e.target.value);
+	}, []);
+
+	const handlePasswordChange = useCallback((e) => {
+		setPassword(e.target.value);
+	}, []);
 
 	const signInGoogle = async () => {
 		try {
@@ -30,22 +37,58 @@ const Signup = () => {
 		}
 	};
 
-	const signInWithCredentails = async (event) => {
-		event.preventDefault();
+	const signInWithCredentails = useCallback(
+		async (event) => {
+			event.preventDefault();
 
-		try {
-			const response = await signInWithEmail(email, password);
-			if (response) {
-				router.push("/profile");
+			try {
+				const response = await signInWithEmail(email, password);
+				if (response === "success") {
+					router.push("/profile");
+				} else {
+					const errorMessage = convertFirebaseErrors(response);
+					setErrorAuthMessage(errorMessage);
+					handleShowAuthErrorMessage();
+				}
+			} catch (error) {
+				console.log(error);
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+		},
+		[email, password]
+	);
+
+	useEffect(() => {
+		errorAuthMessageBanner &&
+			setTimeout(() => {
+				setErrorAuthMessageBanner(false);
+				setErrorAuthMessage("");
+			}, 10000);
+	}, [errorAuthMessageBanner]);
+
+	useEffect(() => {
+		const handleAsynGetResultFromRedict = async () => {
+			try {
+				const response = await handleRedirectResult();
+
+				if (response === null) return;
+
+				if (response === "success") {
+					router.push("/profile");
+				} else {
+					const errorMessage = convertFirebaseErrors(response);
+					setErrorAuthMessage(errorMessage);
+					handleShowAuthErrorMessage();
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		handleAsynGetResultFromRedict();
+	}, []);
 
 	return (
 		<>
-			<div className="w-full flex justify-between items-center">
+			<div className="w-full flex justify-between items-center gap-36">
 				<div className="hidden lg:block relative">
 					<div className="-z-10 absolute top-6 left-36 lg:top-6 lg:left-36 xl:top-6 xl:left-48 w-24 h-24 lg:w-36 lg:h-36 bg-violet-500 rounded-full blur-3xl"></div>
 					<div className="-z-10 absolute top-24 right-8 lg:top-36 lg:right-6 xl:top-44 xl:right-8 w-24 h-24 lg:w-36 lg:h-36 bg-orange-400 rounded-full blur-3xl"></div>
@@ -67,19 +110,23 @@ const Signup = () => {
 						<span className="w-1/4 border border-white"></span>
 					</p>
 					<form onSubmit={signInWithCredentails} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
-						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={(e) => setEmail(e.target.value)} />
-						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="password" placeholder="Passwort" required onChange={(e) => setPassword(e.target.value)} />
-						<button disabled={!email || !password} className={`bg-[#CC7503] text-[#F0FDF4] w-4/5 py-2 rounded-xl font-medium text-xl hover:scale-95 transition duration-200`} type="submit">
+						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={handleEmailChange} />
+						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="password" placeholder="Passwort" required onChange={handlePasswordChange} />
+						<button disabled={!email || !password || errorAuthMessageBanner} className={`bg-[#CC7503] text-[#F0FDF4] w-4/5 py-2 rounded-xl font-medium text-xl hover:scale-95 transition duration-200`} type="submit">
 							Anmelden
 						</button>
 					</form>
-					<div className="flex justify-center w-full">
+					<div className="flex justify-center w-full gap-5">
 						<Link href="/auth/signup" className="w-fit">
 							<p className="hover_text_animation text-zinc-100">Konto erstellen</p>
+						</Link>
+						<Link href="/auth/password_recover" className="w-fit">
+							<p className="hover_text_animation text-zinc-100">Passwort vergessen</p>
 						</Link>
 					</div>
 				</div>
 			</div>
+			{errorAuthMessageBanner && <ContactResponseMessage fill={"bg-red-300"} background={"bg-red-500"} response={errorAuthMessage} />}
 		</>
 	);
 };
