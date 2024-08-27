@@ -5,7 +5,7 @@ import { auth } from "@/app/firebase";
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 
-const recoverPassword = () => {
+const RecoverPassword = () => {
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
 	const [error, setError] = useState("");
@@ -47,4 +47,4 @@ const recoverPassword = () => {
 	);
 };
 
-export default recoverPassword;
+export default RecoverPassword;
