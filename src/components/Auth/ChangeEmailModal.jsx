@@ -20,6 +20,8 @@ const ChangeEmailModal = ({ onClose }) => {
 
 	const [error, setError] = useState(false);
 
+	const [successResponse, setSuccesResponse] = useState(false);
+
 	const [step, setStep] = useState(1); // To manage the re-authentication and email change steps
 
 	const handleReauthenticate = async (event) => {
@@ -56,6 +58,7 @@ const ChangeEmailModal = ({ onClose }) => {
 
 			if (response === "success") {
 				setMessage("E-Mail-Adresse erfolgreich geändert.");
+				setSuccesResponse(true);
 
 				setTimeout(async () => {
 					// Redirect to the sign-in page after a successful password change
@@ -74,6 +77,15 @@ const ChangeEmailModal = ({ onClose }) => {
 			setLoading(false);
 		}
 	};
+
+	useEffect(() => {
+		(error || successResponse) &&
+			setTimeout(() => {
+				setError(false);
+				setSuccesResponse(false);
+				setMessage("");
+			}, 10000);
+	}, [error, successResponse]);
 
 	const ref = useOutsideClick(onClose);
 
@@ -117,7 +129,7 @@ const ChangeEmailModal = ({ onClose }) => {
 					)}
 				</div>
 			</div>
-			{message && <ContactResponseMessage fill={error ? "bg-red-300" : "bg-[#CC7503]"} background={error ? "bg-red-500" : "bg-[#00ff00]"} response={message} />}
+			{(error || successResponse) && <ContactResponseMessage fill={error ? "bg-red-300" : "bg-[#e5bf8d]"} background={error ? "bg-red-500" : "bg-[#CC7503]"} response={message} />}
 		</>
 	);
 };

@@ -3,24 +3,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { RiBuilding4Fill } from "react-icons/ri";
 import { AiFillPieChart } from "react-icons/ai";
-import { IoPeople } from "react-icons/io5";
 import { CgBrowser } from "react-icons/cg";
 import { BiSolidCoupon } from "react-icons/bi";
-import { FaInstagram } from "react-icons/fa";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaInstagram, FaRegBookmark, FaWhatsapp, FaBookmark } from "react-icons/fa";
 import useOutsideClick from "@/app/hooks/useOutsideClick";
-// import getMonthDifference from "@/helpers/getMonthDifference";
-// import hrefValidator from "@/helpers/hrefValidator";
-// import weekSchedule from "@/helpers/weekSchedule";
 import useSWR from "swr";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import convertUnixDateToFullDate from "@/helpers/convertUnixDateFullDate";
 import loadable from "@loadable/component";
+import { getUserFromDatabase, saveEventToUserFavorites, deleteEventFromUserFavorites } from "@/app/libs/userFirebaseActions";
+import useAuth from "@/app/hooks/useAuth";
+import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
+// import getMonthDifference from "@/helpers/getMonthDifference";
+// import hrefValidator from "@/helpers/hrefValidator";
+// import weekSchedule from "@/helpers/weekSchedule";
 
 const EventDetailsPage = ({ params }) => {
+	const { user } = useAuth();
+
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
 
 	const fetcher = (...args) =>
@@ -81,6 +83,14 @@ const EventDetailsPage = ({ params }) => {
 			}, 4000);
 	}, [showBanner]);
 
+	const [message, setMessage] = useState("");
+
+	const [errorResponse, setErrorResponse] = useState(false);
+
+	const [successResponse, setSuccesResponse] = useState(false);
+
+	const [isEventSaved, setIsEventSaved] = useState(false);
+
 	// const currentDate = new Date();
 	// const creationData = new Date(business.createdAt._seconds * 1000 + business.createdAt._nanoseconds / 1000000);
 	// const monthsDifference = getMonthDifference(creationData, currentDate);
@@ -107,16 +117,93 @@ const EventDetailsPage = ({ params }) => {
 	// 	phoneNum: business.number ?? null,
 	// };
 
+	const handleClickOutside = () => {
+		isOpen(false);
+	};
+
 	const ref = useOutsideClick(handleClickOutside);
 
-	function handleClickOutside() {
-		isOpen(false);
-	}
+	const handleSaveEvent = async () => {
+		try {
+			if (!user) {
+				setMessage("Bitte melden Sie sich!");
+				setErrorResponse(true);
+				return;
+			}
+
+			const response = await saveEventToUserFavorites(eventInfo.id, user);
+
+			if (response === "success") {
+				setMessage("Das Event wurde gespeichert!");
+				setSuccesResponse(true);
+				setIsEventSaved(true);
+			} else {
+				setMessage(convertFirebaseErrors(response));
+				setErrorResponse(true);
+			}
+		} catch (error) {
+			console.log(error);
+			setMessage("Ein unbekannter Fehler ist aufgetreten!");
+			setErrorResponse(true);
+		}
+	};
+
+	const handleDeleteEvent = async () => {
+		try {
+			if (!user) {
+				setMessage("Bitte melden Sie sich!");
+				setErrorResponse(true);
+				return;
+			}
+
+			const response = await deleteEventFromUserFavorites(eventInfo.id, user);
+
+			if (response === "success") {
+				setMessage("Das Event wurde entfernt!");
+				setSuccesResponse(true);
+				setIsEventSaved(false);
+			} else {
+				setMessage(convertFirebaseErrors(response));
+				setErrorResponse(true);
+			}
+		} catch (error) {
+			console.log(error);
+			setMessage("Ein unbekannter Fehler ist aufgetreten!");
+			setErrorResponse(true);
+		}
+	};
+
+	useEffect(() => {
+		(errorResponse || successResponse) &&
+			setTimeout(() => {
+				setErrorResponse(false);
+				setSuccesResponse(false);
+				setMessage("");
+			}, 10000);
+	}, [errorResponse, successResponse]);
+
+	useEffect(() => {
+		const checkIfEventIsSaved = async () => {
+			if (user) {
+				const userFromFirebase = await getUserFromDatabase(user.uid);
+
+				if (userFromFirebase && userFromFirebase.favouriteEvents) {
+					// Check if the event is saved in the user's favourites
+					setIsEventSaved(userFromFirebase.favouriteEvents.includes(eventInfo?.id));
+				}
+			}
+		};
+
+		if (eventInfo) {
+			checkIfEventIsSaved();
+		}
+	}, [user, eventInfo]);
 
 	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
 	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
 	const InteractiveMap = loadable(() => import("@/components/InteractiveMap"));
 	const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
+	const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
 
 	if (isLoading) return <LoadingSpinner />;
 
@@ -134,9 +221,9 @@ const EventDetailsPage = ({ params }) => {
 				</div>
 
 				<div className="flex flex-col justify-center items-center md:flex-row md:justify-end md:items-end">
-					<button onClick={handleShowBanner} className="bg-clubbery-orange transition-transform transform active:scale-95 hover:scale-95 w-full md:w-auto flex justify-center items-center py-2 px-4 rounded-md mb-4 md:mb-0 md:mr-2">
-						<IoIosNotificationsOutline className="mr-1" size={27} />
-						Merken
+					<button onClick={isEventSaved ? handleDeleteEvent : handleSaveEvent} className="bg-clubbery-orange transition-transform transform active:scale-95 hover:scale-95 w-full md:w-auto flex justify-center items-center py-2 px-4 rounded-md mb-4 md:mb-0 md:mr-2">
+						{isEventSaved ? <FaBookmark className="mr-1" size={27} /> : <FaRegBookmark className="mr-1" size={27} />}
+						{isEventSaved ? "Gespeichert" : "Merken"}
 					</button>
 					{/* {alert && <BusinessMerkenResponseMessage />} */}
 					<button onClick={handleShowBanner} className="border border-white text-white transition-all active:scale-95 hover:bg-white hover:bg-opacity-10 w-full md:w-auto text-center py-2 px-4 rounded-md" ref={ref}>
@@ -228,6 +315,8 @@ const EventDetailsPage = ({ params }) => {
 				</div>
 			</div>
 			{showBanner && <ComingSoonBanner />}
+
+			{(errorResponse || successResponse) && <ContactResponseMessage fill={errorResponse ? "bg-red-300" : "bg-[#e5bf8d]"} background={errorResponse ? "bg-red-500" : "bg-[#CC7503]"} response={message} />}
 		</>
 	);
 };
