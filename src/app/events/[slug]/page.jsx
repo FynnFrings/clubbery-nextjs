@@ -126,7 +126,7 @@ const EventDetailsPage = ({ params }) => {
 	const handleSaveEvent = async () => {
 		try {
 			if (!user) {
-				setMessage("Bitte melden Sie sich!");
+				setMessage("Bitte melden Sie sich an!");
 				setErrorResponse(true);
 				return;
 			}
@@ -151,7 +151,7 @@ const EventDetailsPage = ({ params }) => {
 	const handleDeleteEvent = async () => {
 		try {
 			if (!user) {
-				setMessage("Bitte melden Sie sich!");
+				setMessage("Bitte melden Sie sich an!");
 				setErrorResponse(true);
 				return;
 			}
