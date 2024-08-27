@@ -46,14 +46,14 @@ function EventPage() {
 	return (
 		<>
 			<div className="flex flex-col gap-y-5">
-				<div className="w-full h-32 md:h-56 relative">
+				{/* <div className="w-full h-32 md:h-56 relative">
 					<Image priority src="/party.webp" alt="Events" width={3300} height={2200} className="bg-cover object-cover opacity-60 bg-center rounded-xl w-full h-full" />
 					<h1 className="text-white text-5xl absolute top-1/2 left-1/2 -translate-x-1/2">Events</h1>
-				</div>
+				</div> */}
 				<div>
 					<SearchField handleSearchInputChange={handleInputSearchChange} searchInput={eventsSearchInput} searchIputPlaceholder={"Events suchen"} />
 				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mt-5">{sortedEventsBySearchInput && sortedEventsBySearchInput.map((eventData) => <EventCard eventData={eventData} key={eventData.id} handleShowBanner={handleShowBanner} />)}</div>
+				<div className="flex flex-wrap justify-center md:justify-start gap-8 mt-5">{sortedEventsBySearchInput && sortedEventsBySearchInput.map((eventData) => <EventCard eventData={eventData} key={eventData.id} handleShowBanner={handleShowBanner} />)}</div>
 			</div>
 			{showBanner && <ComingSoonBanner />}
 		</>

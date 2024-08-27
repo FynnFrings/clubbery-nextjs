@@ -211,9 +211,10 @@ const EventDetailsPage = ({ params }) => {
 
 	return (
 		<>
-			<div className="px-10 py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
-				<Image className="flex justify-center items-center h-56 md:col-span-2 object-cover rounded-lg w-full" src={eventImage.url} alt={eventImage.path} width={976} height={350} priority />
-
+			<div className=" py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
+				<div className="flex justify-center items-center  md:col-span-2 ">
+					<Image className=" aspect-video object-cover rounded-lg " src={eventImage.url} alt={eventImage.path} width={1200} height={675} priority />
+				</div>
 				<div>
 					<h1 className="text-2xl">{eventDetails.title}</h1>
 					<p>{eventInfo.categoryName}</p>
@@ -232,8 +233,8 @@ const EventDetailsPage = ({ params }) => {
 				</div>
 			</div>
 
-			<div className="flex flex-col gap-8 px-10 py-8">
-				<div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-x-8 py-8 w-full">
+				<div className="col-span-2 flex flex-col gap-8 lg:flex-row lg:justify-between">
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg flex flex-col w-full md:2-1/2">
 						<h2 className="text-2xl mb-6">Information</h2>
 						<p className="flex items-center mb-4 text-lg">
@@ -253,10 +254,16 @@ const EventDetailsPage = ({ params }) => {
 						</p> */}
 					</div>
 
-					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg w-full md:2-1/2">
+					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg w-full">
 						<h2 className="text-2xl mb-6">Öffnungszeiten</h2>
-						<p className="text-xl">
-							{convertedTimeFrame.openTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.openDate}&nbsp;&mdash;&nbsp;{convertedTimeFrame.closeTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.closeDate}
+						<p className="text-base md:text-xl flex flex-wrap gap-1">
+							<span>
+								{convertedTimeFrame.openTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.openDate}
+							</span>
+							<span>&mdash;</span>
+							<span>
+								{convertedTimeFrame.closeTime}&nbsp;Uhr&nbsp;{convertedTimeFrame.closeDate}
+							</span>
 						</p>
 						{/* {weekSchedule(business.openingHourPeriods != null ? business.openingHourPeriods : business.dayList)} */}
 					</div>
@@ -309,9 +316,11 @@ const EventDetailsPage = ({ params }) => {
 						)}
 					</div>
 				)}
-				<div className="col-span-2 p-6 bg-white bg-opacity-10 text-white rounded-lg">
-					<h2 className="text-2xl mb-6">Tickets</h2>
-					<div className=" grid grid-cols-1 md:grid-cols-2 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} />)}</div>
+				<div className="col-span-1 md:col-start-3 md:row-start-1 md:row-end-3 md:col-end-3">
+					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg h-auto md:sticky md:top-24">
+						<h2 className="text-2xl mb-6">Tickets</h2>
+						<div className="grid grid-cols-1 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} />)}</div>
+					</div>
 				</div>
 			</div>
 			{showBanner && <ComingSoonBanner />}

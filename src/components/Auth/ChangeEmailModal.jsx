@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { changeUserEmail, reauthenticateUser, userSignOut } from "@/app/libs/getAuth";
 import ContactResponseMessage from "@/components/ContactResponseMessage";
 import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
 import useOutsideClick from "@/app/hooks/useOutsideClick";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const ChangeEmailModal = ({ onClose }) => {
 	const router = useRouter();
