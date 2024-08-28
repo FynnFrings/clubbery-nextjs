@@ -213,7 +213,7 @@ const EventDetailsPage = ({ params }) => {
 		<>
 			<div className=" py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
 				<div className="flex justify-center items-center  md:col-span-2 ">
-					<Image className=" aspect-video object-cover rounded-lg " src={eventImage.url} alt={eventImage.path} width={1200} height={675} priority />
+					<Image className=" aspect-video object-cover rounded-lg " src={eventImage.url} alt={eventImage.path} width={1400} height={275} priority />
 				</div>
 				<div>
 					<h1 className="text-2xl">{eventDetails.title}</h1>
