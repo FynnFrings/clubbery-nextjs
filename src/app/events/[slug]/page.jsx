@@ -16,6 +16,7 @@ import loadable from "@loadable/component";
 import { getUserFromDatabase, saveEventToUserFavorites, deleteEventFromUserFavorites } from "@/app/libs/userFirebaseActions";
 import useAuth from "@/app/hooks/useAuth";
 import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
+import InteractiveMap from "@/components/InteractiveMap";
 // import getMonthDifference from "@/helpers/getMonthDifference";
 // import hrefValidator from "@/helpers/hrefValidator";
 // import weekSchedule from "@/helpers/weekSchedule";
@@ -33,6 +34,8 @@ const EventDetailsPage = ({ params }) => {
 			},
 			body: JSON.stringify({ id: params.slug }),
 		}).then((res) => res.json());
+
+	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
 
 	const { data, isLoading, error } = useSWR(GET_EVENT_BY_ID, fetcher);
 
@@ -72,7 +75,7 @@ const EventDetailsPage = ({ params }) => {
 
 	const [showBanner, setShowBanner] = useState(false);
 
-	const handleShowBanner = () => {
+	const handleShowBanner = (event) => {
 		!showBanner && setShowBanner(true);
 	};
 
@@ -90,6 +93,10 @@ const EventDetailsPage = ({ params }) => {
 	const [successResponse, setSuccesResponse] = useState(false);
 
 	const [isEventSaved, setIsEventSaved] = useState(false);
+
+	const [ticketAmounts, setTicketAmounts] = useState({});
+
+	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).some((ticketAmount) => ticketAmount === 0);
 
 	// const currentDate = new Date();
 	// const creationData = new Date(business.createdAt._seconds * 1000 + business.createdAt._nanoseconds / 1000000);
@@ -116,6 +123,13 @@ const EventDetailsPage = ({ params }) => {
 	// 	email: business.email ?? null,
 	// 	phoneNum: business.number ?? null,
 	// };
+
+	const handleTicketAmountChange = (ticketId, ticketAmount) => {
+		setTicketAmounts((prev) => ({
+			...prev,
+			[ticketId]: ticketAmount,
+		}));
+	};
 
 	const handleClickOutside = () => {
 		isOpen(false);
@@ -187,9 +201,9 @@ const EventDetailsPage = ({ params }) => {
 			if (user) {
 				const userFromFirebase = await getUserFromDatabase(user.uid);
 
-				if (userFromFirebase && userFromFirebase.favouriteEvents) {
+				if (userFromFirebase && userFromFirebase[savedEventsDocumentName]) {
 					// Check if the event is saved in the user's favourites
-					setIsEventSaved(userFromFirebase.favouriteEvents.includes(eventInfo?.id));
+					setIsEventSaved(userFromFirebase[savedEventsDocumentName].includes(eventInfo?.id));
 				}
 			}
 		};
@@ -201,7 +215,6 @@ const EventDetailsPage = ({ params }) => {
 
 	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
 	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
-	const InteractiveMap = loadable(() => import("@/components/InteractiveMap"));
 	const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
 	const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
 
@@ -317,7 +330,10 @@ const EventDetailsPage = ({ params }) => {
 				<div className="col-span-1 md:col-start-3 md:row-start-1 md:row-end-3 md:col-end-3">
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg h-auto md:sticky md:top-24">
 						<h2 className="text-2xl mb-6">Tickets</h2>
-						<div className="grid grid-cols-1 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} />)}</div>
+						<div className="grid grid-cols-1 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]} />)}</div>
+						<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
+							<Link href={""}>Kaufen</Link>
+						</button>
 					</div>
 				</div>
 			</div>

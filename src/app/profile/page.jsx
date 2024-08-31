@@ -5,11 +5,19 @@ import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
 import { useRouter } from "next/navigation";
 import loadable from "@loadable/component";
+import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorComponent from "@/components/ErrorComponent";
 import { useSelector } from "react-redux";
+import { getUserFromDatabase } from "../libs/userFirebaseActions";
+import Link from "next/link";
+import Image from "next/image";
 
 const User = () => {
+	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
+
+	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
+
 	const router = useRouter();
 
 	const { user, status } = useAuth();
@@ -19,6 +27,10 @@ const User = () => {
 	const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
 	const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
+
+	const [savedEventsUID, setSavedEventsUID] = useState([]);
+	const [savedEvents, setSavedEvents] = useState([]);
+	const [loadingEvents, setLoadingEvents] = useState(true);
 
 	const displayUserName = user?.displayName ?? user?.email;
 
@@ -56,6 +68,48 @@ const User = () => {
 		setShowChangeEmailModal(false);
 	};
 
+	// Fetch saved events
+	useEffect(() => {
+		const checkIfEventIsSaved = async () => {
+			if (user) {
+				const userFromFirebase = await getUserFromDatabase(user.uid);
+
+				if (userFromFirebase && userFromFirebase[savedEventsDocumentName] && userFromFirebase[savedEventsDocumentName].length > 0) {
+					setSavedEventsUID(userFromFirebase[savedEventsDocumentName]);
+				}
+			}
+		};
+		if (user) {
+			checkIfEventIsSaved();
+		}
+	}, [user, savedEventsDocumentName]);
+
+	// Fetch event details for saved events
+	useEffect(() => {
+		const fetchSavedEvents = async () => {
+			if (savedEventsUID.length > 0) {
+				try {
+					setLoadingEvents(true);
+					const eventRequests = savedEventsUID.map((eventUID) => axios.post(`${GET_EVENT_BY_ID}`, { id: `${eventUID}` }));
+					const events = await Promise.all(eventRequests);
+					setSavedEvents(events.map((response) => response.data));
+				} catch (error) {
+					console.error("Error fetching saved events:", error);
+				} finally {
+					setLoadingEvents(false);
+				}
+			} else {
+				setLoadingEvents(false);
+			}
+		};
+
+		if (savedEventsUID.length > 0) {
+			fetchSavedEvents();
+		} else {
+			setSavedEvents([]);
+		}
+	}, [savedEventsUID, GET_EVENT_BY_ID]);
+
 	const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
 	const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
 	const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
@@ -74,6 +128,41 @@ const User = () => {
 				</div>
 
 				<div className="w-full max-w-4xl flex flex-col gap-6">
+					<div className="w-full max-w-4xl flex flex-col gap-8 mt-8">
+						{/* Favorite Events Section */}
+						<div>
+							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gespeicherte Events</h2>
+							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
+								{loadingEvents ? (
+									<p className="text-lg">Aktualisieren...</p>
+								) : savedEvents.length > 0 ? (
+									<ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+										{savedEvents.map((event) => (
+											<li key={event.itemId}>
+												<Link href={`/events/${event.itemId}`} className="">
+													<div style={{ backgroundImage: `url(${event.images[0].url}})` }} className="p-4 h-48 rounded-lg flex justify-center items-center bg-cover bg-center bg-blend-darken bg-[#0000004f] transition-transform duration-200 hover:scale-95">
+														<h3 className="text-lg font-semibold mb-2">{event.details.title}</h3>
+													</div>
+												</Link>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className="text-lg">Du hast noch keine Events gespeichert.</p>
+								)}
+							</div>
+						</div>
+
+						{/* Purchased Tickets Section */}
+						<div>
+							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
+							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
+								{/* Replace with dynamic content */}
+								<p className="text-lg">Du hast noch keine Tickets gekauft.</p>
+							</div>
+						</div>
+					</div>
+
 					<div className="w-full flex flex-col md:flex-row gap-5">
 						{provider && (
 							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowChangePasswordBanner}>
@@ -91,26 +180,6 @@ const User = () => {
 						</button>
 					</div>
 
-					<div className="w-full max-w-4xl flex flex-col gap-8 mt-8">
-						{/* Favorite Events Section */}
-						<div>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gespeicherte Events</h2>
-							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
-								{/* Replace with dynamic content */}
-								<p className="text-lg">Du hast noch keine Events gespeichert.</p>
-							</div>
-						</div>
-
-						{/* Purchased Tickets Section */}
-						<div>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
-							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
-								{/* Replace with dynamic content */}
-								<p className="text-lg">Du hast noch keine Tickets gekauft.</p>
-							</div>
-						</div>
-					</div>
-
 					<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleSignOut}>
 						Abmelden
 					</button>
@@ -123,7 +192,5 @@ const User = () => {
 		</>
 	);
 };
-
-User.requireAuth = true;
 
 export default User;

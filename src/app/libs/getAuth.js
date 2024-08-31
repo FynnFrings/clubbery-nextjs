@@ -22,7 +22,7 @@ export const signInWithEmail = async (email, password) => {
 			return "success";
 		}
 	} catch (error) {
-		console.log(error.code);
+		console.log("Error during sign in with email:", error);
 		return error.code;
 	}
 };
@@ -35,14 +35,18 @@ export const signUpWithEmail = async (email, password) => {
 			return "success";
 		}
 	} catch (error) {
-		console.log(error);
+		console.log("Error during sign up:", error);
 		return error.code;
 	}
 };
 
 // Function to handle Sign-Out
 export const userSignOut = async () => {
-	return await signOut(auth);
+	try {
+		return await signOut(auth);
+	} catch (error) {
+		console.log("Error during sign out:", error);
+	}
 };
 
 // Function to handle the result after redirect sign-in
@@ -55,8 +59,7 @@ export const handleRedirectResult = async () => {
 			return "success";
 		}
 	} catch (error) {
-		console.error("Error during redirect result:", error);
-		console.log(error.code);
+		console.log("Error during redirect result:", error);
 		return error.code;
 	}
 };
@@ -98,7 +101,7 @@ export const reauthenticateUser = async (password) => {
 		await reauthenticateWithCredential(user, credential);
 		return "success";
 	} catch (error) {
-		console.log("🚀 ~ reauthenticateUser ~ error:", error);
+		console.log("Error reauthenricating user:", error);
 		return error.code;
 	}
 };

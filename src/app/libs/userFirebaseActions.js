@@ -9,7 +9,7 @@ export const saveEventToUserFavorites = async (eventUID, user) => {
 		}
 
 		const userUID = user.uid;
-		const userDocRef = doc(db, "users", userUID);
+		const userDocRef = doc(db, process.env.NEXT_PUBLIC_USER_DATABASE_NAME, userUID);
 
 		// Check if the user document exists
 		const userDoc = await getDoc(userDocRef);
@@ -17,7 +17,7 @@ export const saveEventToUserFavorites = async (eventUID, user) => {
 		if (userDoc.exists()) {
 			// If the user exists, add the event UID to the "favouriteEvents" array
 			await updateDoc(userDocRef, {
-				favouriteEvents: arrayUnion(eventUID),
+				[process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME]: arrayUnion(eventUID),
 			});
 		} else {
 			// If the user doesn't exist, create a new user document and save the event UID
@@ -27,7 +27,7 @@ export const saveEventToUserFavorites = async (eventUID, user) => {
 				uid: userUID,
 				email: user.email,
 				displayName: user.displayName || "",
-				favouriteEvents: [eventUID],
+				[process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME]: [eventUID],
 				createdAt: createdAt, // Add the createdAt field
 			});
 		}
@@ -47,7 +47,7 @@ export const deleteEventFromUserFavorites = async (eventUID, user) => {
 		}
 
 		const userUID = user.uid;
-		const userDocRef = doc(db, "users", userUID);
+		const userDocRef = doc(db, process.env.NEXT_PUBLIC_USER_DATABASE_NAME, userUID);
 
 		// Check if the user document exists
 		const userDoc = await getDoc(userDocRef);
@@ -55,7 +55,7 @@ export const deleteEventFromUserFavorites = async (eventUID, user) => {
 		if (userDoc.exists()) {
 			// If the user exists, remove the event UID from the "favouriteEvents" array
 			await updateDoc(userDocRef, {
-				favouriteEvents: arrayRemove(eventUID),
+				[process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME]: arrayRemove(eventUID),
 			});
 			return "success";
 		} else {
@@ -76,7 +76,7 @@ export const deleteUserFromDatabase = async (user) => {
 		}
 
 		const userUID = user.uid;
-		const userDocRef = doc(db, "users", userUID);
+		const userDocRef = doc(db, process.env.NEXT_PUBLIC_USER_DATABASE_NAME, userUID);
 
 		// Check if the user document exists
 		const userDoc = await getDoc(userDocRef);
@@ -99,7 +99,7 @@ export const deleteUserFromDatabase = async (user) => {
 // Function to get a user from the "users" document
 export const getUserFromDatabase = async (userUID) => {
 	try {
-		const userDocRef = doc(db, "users", userUID);
+		const userDocRef = doc(db, process.env.NEXT_PUBLIC_USER_DATABASE_NAME, userUID);
 		const userDoc = await getDoc(userDocRef);
 
 		if (userDoc.exists()) {
