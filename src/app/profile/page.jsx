@@ -8,10 +8,10 @@ import loadable from "@loadable/component";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorComponent from "@/components/ErrorComponent";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "@/app/store/useSlice";
 import { getUserFromDatabase } from "../libs/userFirebaseActions";
 import Link from "next/link";
-import Image from "next/image";
 
 const User = () => {
 	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
@@ -19,6 +19,8 @@ const User = () => {
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
 
 	const router = useRouter();
+
+	const dispatch = useDispatch();
 
 	const { user, status } = useAuth();
 
@@ -28,6 +30,8 @@ const User = () => {
 
 	const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
 
+	const [showChangeNameModal, setShowChangeNameModal] = useState(false);
+
 	const [savedEventsUID, setSavedEventsUID] = useState([]);
 	const [savedEvents, setSavedEvents] = useState([]);
 	const [loadingEvents, setLoadingEvents] = useState(true);
@@ -36,6 +40,7 @@ const User = () => {
 
 	const handleSignOut = async () => {
 		try {
+			dispatch(setUser(null));
 			router.push("/");
 			await userSignOut();
 		} catch (error) {
@@ -67,6 +72,26 @@ const User = () => {
 	const handleCloseEmailModal = () => {
 		setShowChangeEmailModal(false);
 	};
+
+	const handleOpenModalChangeDisplayName = () => {
+		setShowChangeNameModal(true);
+	};
+
+	const handleCloseModalChangeDisplayName = () => {
+		setShowChangeNameModal(false);
+	};
+
+	useEffect(() => {
+		if (user) {
+			const currnetUser = {
+				displayName: user.displayName,
+				email: user.email,
+				emailVerified: user.emailVerified,
+				uid: user.uid,
+			};
+			dispatch(setUser(currnetUser));
+		}
+	}, [user]);
 
 	// Fetch saved events
 	useEffect(() => {
@@ -114,6 +139,7 @@ const User = () => {
 	const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
 	const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
 	const AccountDeletionModal = loadable(() => import("@/components/Auth/DeleteUserAccountModal"));
+	const ChangeUserDisplayNameModal = loadable(() => import("@/components/Auth/ChangeUserDisplayNameModal"));
 
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;
@@ -165,30 +191,38 @@ const User = () => {
 
 					<div className="w-full flex flex-col md:flex-row gap-5">
 						{provider && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowChangePasswordBanner}>
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowChangePasswordBanner}>
 								Passwort zurücksetzen
 							</button>
 						)}
+
 						{provider && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowEmailModal}>
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowEmailModal}>
 								E-mail ändern
 							</button>
 						)}
 
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleShowAccountDeletionModal}>
+						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleOpenModalChangeDisplayName}>
+							Benutzername ändern
+						</button>
+
+						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowAccountDeletionModal}>
 							Konto entfernen
 						</button>
 					</div>
 
-					<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg md:text-xl" onClick={handleSignOut}>
-						Abmelden
-					</button>
+					<div className="w-full flex justify-center">
+						<button className="clubbery_main_button hover_button_animation w-full md:w-1/2 py-3 text-lg mt-5" onClick={handleSignOut}>
+							Abmelden
+						</button>
+					</div>
 				</div>
 			</div>
 
 			{showChangePasswordModal && <ChangePasswordModal onClose={handleCloseModal} user={user} />}
 			{showChangeEmailModal && <ChangeEmailModal onClose={handleCloseEmailModal} />}
 			{showAccountDeletionModal && <AccountDeletionModal onClose={handleCloseAccountDeletionModal} />}
+			{showChangeNameModal && <ChangeUserDisplayNameModal user={user} onClose={handleCloseModalChangeDisplayName} />}
 		</>
 	);
 };

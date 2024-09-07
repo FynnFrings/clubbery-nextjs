@@ -18,11 +18,11 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" className={poppins.className}>
 			<body id="body">
-				<Layout>
-					<Suspense fallback={<LoadingSpinner />}>
-						<Provider store={store}>{children}</Provider>
-					</Suspense>
-				</Layout>
+				<Provider store={store}>
+					<Layout>
+						<Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+					</Layout>
+				</Provider>
 			</body>
 		</html>
 	);
