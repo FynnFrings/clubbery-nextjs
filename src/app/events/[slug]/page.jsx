@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { RiBuilding4Fill } from "react-icons/ri";
@@ -17,9 +16,8 @@ import { getUserFromDatabase, saveEventToUserFavorites, deleteEventFromUserFavor
 import useAuth from "@/app/hooks/useAuth";
 import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
 import InteractiveMap from "@/components/InteractiveMap";
-// import getMonthDifference from "@/helpers/getMonthDifference";
-// import hrefValidator from "@/helpers/hrefValidator";
-// import weekSchedule from "@/helpers/weekSchedule";
+import { useDispatch, useSelector } from "react-redux";
+import { setSavedTickets } from "@/app/store/useSlice";
 
 const EventDetailsPage = ({ params }) => {
 	const { user } = useAuth();
@@ -39,13 +37,15 @@ const EventDetailsPage = ({ params }) => {
 
 	const { data, isLoading, error } = useSWR(GET_EVENT_BY_ID, fetcher);
 
+	const dispatch = useDispatch();
+
+	const savedTickets = useSelector((state) => state.auth.savedTickets);
+
 	const eventInfo = data ? data : null;
 
 	const eventDetails = data && data?.details;
 
 	const ticketList = data && data?.ticketList;
-
-	const eventImage = data && data.images[0];
 
 	const eventLocation = data && data.eventLocation;
 
@@ -94,42 +94,29 @@ const EventDetailsPage = ({ params }) => {
 
 	const [isEventSaved, setIsEventSaved] = useState(false);
 
-	const [ticketAmounts, setTicketAmounts] = useState({});
+	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
 
-	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).some((ticketAmount) => ticketAmount === 0);
+	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).every((ticket) => ticket.ticketAmount === 0);
 
-	// const currentDate = new Date();
-	// const creationData = new Date(business.createdAt._seconds * 1000 + business.createdAt._nanoseconds / 1000000);
-	// const monthsDifference = getMonthDifference(creationData, currentDate);
-	// const weekDay = currentDate.getDay();
+	const handleTicketAmountChange = (ticket, ticketAmount) => {
+		setTicketAmounts((prev) => {
+			const updatedTicketAmounts = { ...prev };
 
-	// const businessOpeningHoursPeriods = () => {
-	// 	if (!business.openingHourPeriods) {
-	// 		return null;
-	// 	}
-	// 	const result = business.openingHourPeriods.find((day) => day.open.day == weekDay);
-	// 	if (result && result.open.time !== "Geschlossen") {
-	// 		const openTimeArray = result.open.time.split("");
-	// 		openTimeArray?.splice(2, 0, ":");
-	// 		const openTime = openTimeArray?.join("");
-	// 		return openTime;
-	// 	}
-	// };
+			if (ticketAmount === 0) {
+				// Remove the ticket if the amount is 0
+				delete updatedTicketAmounts[ticket.id];
+			} else {
+				// Update or add the ticket amount if it's greater than 0
+				updatedTicketAmounts[ticket.id] = { ticketAmount: ticketAmount, ticket };
+			}
 
-	// const businessContacts = {
-	// 	instagram: business.instagram ?? null,
-	// 	telegram: business.telegram ?? null,
-	// 	whatsapp: business.whatsapp ?? null,
-	// 	email: business.email ?? null,
-	// 	phoneNum: business.number ?? null,
-	// };
-
-	const handleTicketAmountChange = (ticketId, ticketAmount) => {
-		setTicketAmounts((prev) => ({
-			...prev,
-			[ticketId]: ticketAmount,
-		}));
+			return updatedTicketAmounts;
+		});
 	};
+
+	useEffect(() => {
+		dispatch(setSavedTickets(ticketAmounts));
+	}, [ticketAmounts]);
 
 	const handleClickOutside = () => {
 		isOpen(false);
@@ -225,7 +212,6 @@ const EventDetailsPage = ({ params }) => {
 	return (
 		<>
 			<div className=" py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
-				
 				<div>
 					<h1 className="text-2xl">{eventDetails.title}</h1>
 					<p>{eventInfo.categoryName}</p>
@@ -260,9 +246,6 @@ const EventDetailsPage = ({ params }) => {
 							<BiSolidCoupon className="mr-3 text-clubbery-orange" size={28} />
 							{totalAmountOfTickets <= 0 ? "Alle Ticket sind ausverkauft" : `${totalAmountOfTickets} Ticket verfügbar`}
 						</p>
-						{/* <p className="flex items-center mb-4 text-lg">
-							<IoPeople className="mr-3 w-7 h-7 text-clubbery-orange" /> <span>seit 2 Monate Mitglied der Clubbery App</span>
-						</p> */}
 					</div>
 
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg w-full">
@@ -330,10 +313,12 @@ const EventDetailsPage = ({ params }) => {
 				<div className="col-span-1 md:col-start-3 md:row-start-1 md:row-end-3 md:col-end-3">
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg h-auto md:sticky md:top-24">
 						<h2 className="text-2xl mb-6">Tickets</h2>
-						<div className="grid grid-cols-1 gap-6">{ticketList && ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]} />)}</div>
-						<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
-							<Link href={""}>Kaufen</Link>
-						</button>
+						<div className="grid grid-cols-1 gap-6">{ticketList ? ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]?.ticketAmount} />) : <p>Loading...</p>}</div>
+						<Link href={"/payment_checkout"}>
+							<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
+								Kaufen
+							</button>
+						</Link>
 					</div>
 				</div>
 			</div>

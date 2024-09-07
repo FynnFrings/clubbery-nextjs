@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 
@@ -15,7 +14,7 @@ const EventTicket = ({ ticket, onTicketAmountChange, parentTicketAmount }) => {
 			ticketAmount: newTicketAmount,
 		}));
 
-		onTicketAmountChange(ticket.id, newTicketAmount);
+		onTicketAmountChange(ticket, newTicketAmount);
 	};
 
 	const handleDecreaseTicketCount = () => {
@@ -28,7 +27,7 @@ const EventTicket = ({ ticket, onTicketAmountChange, parentTicketAmount }) => {
 			ticketAmount: newTicketAmount,
 		}));
 
-		onTicketAmountChange(ticket.id, newTicketAmount);
+		onTicketAmountChange(ticket, newTicketAmount);
 	};
 
 	return (

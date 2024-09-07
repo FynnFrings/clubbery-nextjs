@@ -15,13 +15,17 @@ const authSlice = createSlice({
 		setAuthProvider: (state, action) => {
 			state.provider = action.payload;
 		},
+		setSavedTickets: (state, action) => {
+			state.savedTickets = action.payload;
+		},
 		resetAuth: (state) => {
 			state.user = null;
 			state.provider = null;
+			state.savedTickets = {};
 		},
 	},
 });
 
-export const { setUser, setAuthProvider, resetAuth } = authSlice.actions;
+export const { setUser, setAuthProvider, resetAuth, setSavedTickets } = authSlice.actions;
 
 export default authSlice.reducer;
