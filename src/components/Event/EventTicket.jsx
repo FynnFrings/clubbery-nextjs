@@ -39,15 +39,19 @@ const EventTicket = ({ ticket, onTicketAmountChange, parentTicketAmount }) => {
 					<p className="text-base md:text-lg font-medium">Preis: {ticket.price} €</p>
 					{/* <p className="text-md text-zinc-300 mt-2 md:mt-0">Verfügbar: {ticket.totalAvailableTicketAmount}</p> */}
 				</div>
-				<div className="w-1/3 flex justify-between my-5">
-					<button onClick={handleDecreaseTicketCount}>
-						<FaMinus className="w-5 h-5" />
-					</button>
-					<span className="text-lg">{ticketCount.ticketAmount}</span>
-					<button onClick={handleIncreaseTicketCount} className="px-2">
-						<FaPlus className="w-5 h-5" />
-					</button>
-				</div>
+				{ticket.totalAvailableTicketAmount ? (
+					<div className="w-1/3 flex justify-between my-5">
+						<button onClick={handleDecreaseTicketCount}>
+							<FaMinus className="w-5 h-5" />
+						</button>
+						<span className="text-lg">{ticketCount.ticketAmount}</span>
+						<button onClick={handleIncreaseTicketCount} className="px-2">
+							<FaPlus className="w-5 h-5" />
+						</button>
+					</div>
+				) : (
+					<p>Ausverkauft</p>
+				)}
 			</div>
 		</div>
 	);

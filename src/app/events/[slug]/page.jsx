@@ -96,8 +96,6 @@ const EventDetailsPage = ({ params }) => {
 
 	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
 
-	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).every((ticket) => ticket.ticketAmount === 0);
-
 	const handleTicketAmountChange = (ticket, ticketAmount) => {
 		setTicketAmounts((prev) => {
 			const updatedTicketAmounts = { ...prev };
@@ -113,6 +111,18 @@ const EventDetailsPage = ({ params }) => {
 			return updatedTicketAmounts;
 		});
 	};
+
+	const checkIfEventAvailable = (timestampObj) => {
+		const unixTimestamp = timestampObj._seconds;
+
+		const currentTimestamp = Math.floor(Date.now() / 1000);
+
+		return unixTimestamp > currentTimestamp;
+	};
+
+	const isEventAvailable = eventInfo && checkIfEventAvailable(eventInfo.timeFrame.endDate);
+
+	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).every((ticket) => ticket.ticketAmount === 0) || !isEventAvailable;
 
 	useEffect(() => {
 		dispatch(setSavedTickets(ticketAmounts));
