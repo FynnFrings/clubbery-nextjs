@@ -10,11 +10,14 @@ import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setAuthProvider } from "@/app/store/useSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import loadable from "@loadable/component";
 
 const Signup = () => {
 	const router = useRouter();
 
 	const dispatch = useDispatch();
+
+	const [loadingScreen, setLoadingScreen] = useState(false);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -22,7 +25,7 @@ const Signup = () => {
 	const [errorAuthMessage, setErrorAuthMessage] = useState("");
 	const [errorAuthMessageBanner, setErrorAuthMessageBanner] = useState(false);
 
-	const [showPassword, setShowPassword] = useState(false); // State for showing/hiding password
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleShowAuthErrorMessage = () => {
 		!errorAuthMessageBanner && setErrorAuthMessageBanner(true);
@@ -73,11 +76,12 @@ const Signup = () => {
 			setTimeout(() => {
 				setErrorAuthMessageBanner(false);
 				setErrorAuthMessage("");
-			}, 10000);
+			}, 5000);
 	}, [errorAuthMessageBanner]);
 
 	useEffect(() => {
 		const handleAsynGetResultFromRedict = async () => {
+			setLoadingScreen(true);
 			try {
 				const response = await handleRedirectResult();
 
@@ -95,10 +99,16 @@ const Signup = () => {
 				console.log(error);
 				setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
 				handleShowAuthErrorMessage();
+			} finally {
+				setLoadingScreen(false);
 			}
 		};
 		handleAsynGetResultFromRedict();
 	}, []);
+
+	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
+
+	if (loadingScreen) return <LoadingSpinner />;
 
 	return (
 		<>
@@ -112,6 +122,7 @@ const Signup = () => {
 				</div>
 				<div className="h-fit w-full lg:w-1/2 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
 					<h2 className="text-center text-zinc-100 text-2xl">Haben Sie schon ein Konto?</h2>
+
 					<div className="w-full flex justify-center">
 						<button onClick={signInGoogle}>
 							<Image src={"/buttons/google_signin.svg"} alt="Sign up with Google" width={200} height={100} />
@@ -123,6 +134,7 @@ const Signup = () => {
 						<span className="font-light text-zinc-100 text-2xl mx-2">Oder</span>
 						<span className="w-1/4 border border-white"></span>
 					</p>
+
 					<form onSubmit={signInWithCredentails} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
 						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={handleEmailChange} />
 						<div className="relative w-full">
@@ -135,6 +147,7 @@ const Signup = () => {
 							Anmelden
 						</button>
 					</form>
+
 					<div className="flex justify-center w-full gap-5">
 						<Link href="/auth/signup" className="w-fit">
 							<p className="hover_text_animation text-zinc-100">Konto erstellen</p>

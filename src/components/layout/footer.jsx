@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+
 const Footer = () => {
+	const thisYear = new Date().getFullYear();
+
 	return (
 		<div className="w-full bg-transparent  text-white mt-10 px-5">
 			<div className="flex flex-col items-center border-y border-slate-600 py-8 gap-y-8">
@@ -18,8 +21,7 @@ const Footer = () => {
 					</div> */}
 					<div className="flex flex-col items-center">
 						<h2 className="font-semibold text-md mb-4">Clubbery</h2>
-						<Link className="font-light text-xs mb-2" target="_blank"
-							href="https://apps.apple.com/de/app/clubbery/id6476625439">
+						<Link className="font-light text-xs mb-2" target="_blank" href="https://apps.apple.com/de/app/clubbery/id6476625439">
 							<p className="hover_text_animation">Download</p>
 						</Link>
 						{/* <a className="font-light text-xs mb-2" href="/contact">
@@ -44,7 +46,6 @@ const Footer = () => {
 							<p className="hover_text_animation">AGB</p>
 						</Link>
 					</div>
-
 				</div>
 				<div className="w-full flex flex-col md:flex-row text-center gap-y-4 md:justify-center md:gap-x-8">
 					<div className="flex flex-row items-center justify-center md:gap-x-8">
@@ -62,9 +63,8 @@ const Footer = () => {
 				</div>
 			</div>
 			<div className="text-center lg:text-left py-8 font-thin text-xs">
-				<h3>&#9400; 2024 copyright. Alle rechte vorbehalten.</h3>
+				<h3>&#9400; {thisYear} copyright. Alle rechte vorbehalten.</h3>
 			</div>
-
 		</div>
 	);
 };

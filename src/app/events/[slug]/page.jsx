@@ -211,7 +211,7 @@ const EventDetailsPage = ({ params }) => {
 
 	return (
 		<>
-			<div className=" py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
+			<div className="py-8 grid gap-8 text-white border-b border-gray-700 md:grid-cols-2 md:grid-rows-auto md:gap-4 md:pt-0">
 				<div>
 					<h1 className="text-2xl">{eventDetails.title}</h1>
 					<p>{eventInfo.categoryName}</p>
@@ -313,7 +313,16 @@ const EventDetailsPage = ({ params }) => {
 				<div className="col-span-1 md:col-start-3 md:row-start-1 md:row-end-3 md:col-end-3">
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg h-auto md:sticky md:top-24">
 						<h2 className="text-2xl mb-6">Tickets</h2>
-						<div className="grid grid-cols-1 gap-6">{ticketList ? ticketList.map((ticket) => <EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]?.ticketAmount} />) : <p>Loading...</p>}</div>
+						{ticketList ? (
+							<div className="grid grid-cols-1 gap-6">
+								{ticketList.map((ticket) => (
+									<EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]?.ticketAmount} />
+								))}
+							</div>
+						) : (
+							<p className="text-2xl font-bold">Aktualisieren...</p>
+						)}
+						<div className="grid grid-cols-1 gap-6"></div>
 						<Link href={"/payment_checkout"}>
 							<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
 								Kaufen
