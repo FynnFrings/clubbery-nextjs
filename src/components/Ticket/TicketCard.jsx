@@ -4,7 +4,7 @@ const TicketCard = ({ ticketObject }) => {
 	const ticketInfo = ticketObject;
 
 	return (
-		<div className="w-full p-5 rounded-lg shadow-lg bg-[#22221f] text-white transition-all transform hover:scale-105">
+		<div className="w-full p-5 rounded-lg shadow-lg bg-[#22221f] text-white">
 			<div className="flex flex-col justify-between space-y-4">
 				<h2 className="text-lg md:text-2xl font-semibold mb-2">{ticketInfo.ticket.title}</h2>
 				<p className="text-sm md:text-base  mb-4">{ticketInfo.ticket.description}</p>

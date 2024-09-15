@@ -25,7 +25,6 @@ const User = () => {
 	const { user, status } = useAuth();
 
 	const provider = useSelector((state) => state.auth.provider);
-	console.log("🚀 ~ User ~ provider:", provider);
 
 	const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
