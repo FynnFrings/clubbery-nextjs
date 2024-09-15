@@ -105,7 +105,7 @@ const EventDetailsPage = ({ params }) => {
 				delete updatedTicketAmounts[ticket.id];
 			} else {
 				// Update or add the ticket amount if it's greater than 0
-				updatedTicketAmounts[ticket.id] = { ticketAmount: ticketAmount, ticket };
+				updatedTicketAmounts[ticket.id] = { ticketAmount: ticketAmount, ticket, eventId: eventInfo.id };
 			}
 
 			return updatedTicketAmounts;
@@ -330,14 +330,19 @@ const EventDetailsPage = ({ params }) => {
 								))}
 							</div>
 						) : (
-							<p className="text-2xl font-bold">Aktualisieren...</p>
+							""
 						)}
-						<div className="grid grid-cols-1 gap-6"></div>
-						<Link href={"/payment_checkout"}>
-							<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
-								Kaufen
+						{user ? (
+							<Link href={`/payment_checkout/${eventInfo.id}`}>
+								<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
+									Kaufen
+								</button>
+							</Link>
+						) : (
+							<button disabled className={`clubbery_main_button w-full mt-6 opacity-60`}>
+								Bitte Melden Sie sich an
 							</button>
-						</Link>
+						)}
 					</div>
 				</div>
 			</div>

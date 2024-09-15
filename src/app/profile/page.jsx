@@ -25,6 +25,7 @@ const User = () => {
 	const { user, status } = useAuth();
 
 	const provider = useSelector((state) => state.auth.provider);
+	console.log("🚀 ~ User ~ provider:", provider);
 
 	const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
@@ -190,13 +191,13 @@ const User = () => {
 					</div>
 
 					<div className="w-full flex flex-col md:flex-row gap-5">
-						{provider && (
+						{provider === "credentials" && (
 							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowChangePasswordBanner}>
 								Passwort zurücksetzen
 							</button>
 						)}
 
-						{provider && (
+						{provider === "credentials" && (
 							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowEmailModal}>
 								E-mail ändern
 							</button>

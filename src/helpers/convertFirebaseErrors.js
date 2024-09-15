@@ -13,7 +13,7 @@ const convertFirebaseErrors = (errorCode) => {
 		case "auth/weak-password":
 			return "Das Passwort ist zu schwach. Bitte verwenden Sie ein stärkeres Passwort.";
 		case "auth/operation-not-allowed":
-			return "Anmeldung mit E-Mail und Passwort ist derzeit nicht möglich.";
+			return "Anmeldung ist derzeit nicht möglich.";
 		case "auth/too-many-requests":
 			return "Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.";
 		case "auth/invalid-credential":

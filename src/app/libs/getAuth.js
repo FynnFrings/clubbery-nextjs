@@ -10,8 +10,8 @@ export const signInWithGoogle = async () => {
 };
 
 // Function to handle Apple Sign-In with Redirect
-export const signInWithApple = () => {
-	return signInWithRedirect(auth, appleProvider);
+export const signInWithApple = async () => {
+	return await signInWithRedirect(auth, appleProvider);
 };
 
 // Function to handle Email and Password Sign-In

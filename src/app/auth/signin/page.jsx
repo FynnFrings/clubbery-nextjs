@@ -1,6 +1,6 @@
 "use client";
 
-import { handleRedirectResult, signInWithEmail, signInWithGoogle } from "@/app/libs/getAuth";
+import { handleRedirectResult, signInWithEmail, signInWithGoogle, signInWithApple } from "@/app/libs/getAuth";
 import ContactResponseMessage from "@/components/ContactResponseMessage";
 import convertFirebaseErrors from "@/helpers/convertFirebaseErrors";
 import Image from "next/image";
@@ -41,7 +41,18 @@ const Signup = () => {
 
 	const signInGoogle = async () => {
 		try {
+			dispatch(setAuthProvider("google"));
 			await signInWithGoogle();
+		} catch (error) {
+			console.log(error);
+			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+			handleShowAuthErrorMessage();
+		}
+	};
+
+	const signInApple = async () => {
+		try {
+			await signInWithApple();
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -88,7 +99,6 @@ const Signup = () => {
 				if (response === null) return;
 
 				if (response === "success") {
-					dispatch(setAuthProvider("google"));
 					router.push("/profile");
 				} else {
 					const errorMessage = convertFirebaseErrors(response);
@@ -123,10 +133,18 @@ const Signup = () => {
 				<div className="h-fit w-full lg:w-1/2 bg-[#22221f] rounded-2xl py-8 px-8 flex flex-col gap-y-5">
 					<h2 className="text-center text-zinc-100 text-2xl">Haben Sie schon ein Konto?</h2>
 
-					<div className="w-full flex justify-center">
-						<button onClick={signInGoogle}>
-							<Image src={"/buttons/google_signin.svg"} alt="Sign up with Google" width={200} height={100} />
-						</button>
+					<div className="w-full flex justify-center gap-5">
+						<div className="w-full flex justify-center">
+							<button onClick={signInGoogle}>
+								<Image src={"/buttons/google_signin.svg"} alt="Sign up with Google" width={200} height={100} />
+							</button>
+						</div>
+
+						<div className="w-full flex justify-center">
+							<button onClick={signInApple}>
+								<Image src={"/buttons/apple_signin.png"} alt="Sign up with Apple" width={200} height={100} />
+							</button>
+						</div>
 					</div>
 
 					<p className="text-center flex items-center justify-center">

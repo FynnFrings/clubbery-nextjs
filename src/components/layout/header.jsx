@@ -9,7 +9,7 @@ import { useScrollPosition } from "@/app/hooks/useScrollPosition";
 import useAuth from "@/app/hooks/useAuth";
 
 const Header = () => {
-	const { user } = useAuth();
+	const { user, status } = useAuth();
 
 	const [menu, setMenu] = useState(false);
 
@@ -45,7 +45,7 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
-					{user ? (
+					{status === "authenthicated" ? (
 						<li>
 							<Link onClick={() => handleOnClick()} href="/profile">
 								<p className="hover_text_animation">Profil</p>
