@@ -33,6 +33,7 @@ const User = () => {
 	const provider = useSelector((state) => state.auth.provider);
 
 	const [savedEventsUID, setSavedEventsUID] = useState([]);
+
 	const [savedEvents, setSavedEvents] = useState([]);
 
 	const [loadingEvents, setLoadingEvents] = useState(true);
@@ -129,6 +130,12 @@ const User = () => {
 
 		fetchSavedEvents();
 	}, [savedEventsUID, GET_EVENT_BY_ID]);
+
+	useEffect(() => {
+		if (!user && status === "unauthenthicated") {
+			router.push("/auth/signin");
+		}
+	}, [user, router, status]);
 
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenticated" && user && !user.emailVerified) return <ConfirmationEmail />;

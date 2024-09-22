@@ -107,10 +107,6 @@ const Signin = () => {
 
 				if (response === "success") {
 					router.push("/profile");
-				} else {
-					const errorMessage = convertFirebaseErrors(response);
-					setErrorAuthMessage(errorMessage);
-					handleShowAuthErrorMessage();
 				}
 			} catch (error) {
 				console.log(error);
