@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { RiBuilding4Fill } from "react-icons/ri";
 import { AiFillPieChart } from "react-icons/ai";
 import { CgBrowser } from "react-icons/cg";
@@ -19,11 +19,20 @@ import InteractiveMap from "@/components/InteractiveMap";
 import { useDispatch, useSelector } from "react-redux";
 import { setSavedTickets } from "@/app/store/useSlice";
 
+const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
+const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
+const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
+const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
+
 const EventDetailsPage = ({ params }) => {
 	const { user } = useAuth();
+	const dispatch = useDispatch();
+	const savedTickets = useSelector((state) => state.auth.savedTickets);
 
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
+	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
 
+	// Fetch event details using SWR
 	const fetcher = (...args) =>
 		fetch(...args, {
 			method: "post",
@@ -33,108 +42,79 @@ const EventDetailsPage = ({ params }) => {
 			body: JSON.stringify({ id: params.slug }),
 		}).then((res) => res.json());
 
-	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
-
 	const { data, isLoading, error } = useSWR(GET_EVENT_BY_ID, fetcher);
 
-	const dispatch = useDispatch();
-
-	const savedTickets = useSelector((state) => state.auth.savedTickets);
-
-	const eventInfo = data ? data : null;
-
-	const eventDetails = data && data?.details;
-
-	const ticketList = data && data?.ticketList;
-
-	const eventLocation = data && data.eventLocation;
+	const eventInfo = data || null;
+	const eventDetails = eventInfo?.details;
+	const ticketList = eventInfo?.ticketList;
+	const eventLocation = eventInfo?.eventLocation;
 
 	const convertedTimeFrame = eventInfo && convertUnixDateToFullDate(eventInfo.timeFrame);
 
-	const calculateTotalAmount = (ticketList) => {
-		return ticketList.reduce((total, ticket) => {
-			return total + ticket.totalAvailableTicketAmount;
-		}, 0);
-	};
+	// Calculate total available tickets
+	const calculateTotalAmount = useCallback((ticketList) => {
+		return ticketList.reduce((total, ticket) => total + ticket.totalAvailableTicketAmount, 0);
+	}, []);
 
-	const totalAmountOfTickets = useMemo(() => ticketList && calculateTotalAmount(ticketList), [ticketList]);
+	const totalAmountOfTickets = useMemo(() => ticketList && calculateTotalAmount(ticketList), [ticketList, calculateTotalAmount]);
 
 	const [open, isOpen] = useState(false);
-
-	// const handleSubmitEvent = (event) => {
-	// 	event.preventDefault();
-	// 	isAlert(true);
-	// 	setTimeout(() => {
-	// 		isAlert(false);
-	// 	}, 3000);
-	// };
-
-	const popUpOpener = () => {
-		isOpen(!open);
-	};
-
 	const [showBanner, setShowBanner] = useState(false);
+	const [message, setMessage] = useState("");
+	const [errorResponse, setErrorResponse] = useState(false);
+	const [successResponse, setSuccesResponse] = useState(false);
+	const [isEventSaved, setIsEventSaved] = useState(false);
+	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
+	const [loading, setLoading] = useState(false); // Loading state for save actions
 
-	const handleShowBanner = (event) => {
-		!showBanner && setShowBanner(true);
-	};
-
+	// Show/hide the banner
+	const handleShowBanner = () => !showBanner && setShowBanner(true);
 	useEffect(() => {
-		showBanner &&
-			setTimeout(() => {
-				setShowBanner(false);
-			}, 4000);
+		showBanner && setTimeout(() => setShowBanner(false), 4000);
 	}, [showBanner]);
 
-	const [message, setMessage] = useState("");
+	// Ticket amount change handler, memoized with useCallback
+	const handleTicketAmountChange = useCallback(
+		(ticket, ticketAmount) => {
+			setTicketAmounts((prev) => {
+				const updatedTicketAmounts = { ...prev };
 
-	const [errorResponse, setErrorResponse] = useState(false);
+				if (ticketAmount === 0) {
+					delete updatedTicketAmounts[ticket.id];
+				} else {
+					updatedTicketAmounts[ticket.id] = { ticketAmount, ticket, eventId: eventInfo?.id };
+				}
 
-	const [successResponse, setSuccesResponse] = useState(false);
+				return updatedTicketAmounts;
+			});
+		},
+		[eventInfo?.id]
+	);
 
-	const [isEventSaved, setIsEventSaved] = useState(false);
-
-	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
-
-	const handleTicketAmountChange = (ticket, ticketAmount) => {
-		setTicketAmounts((prev) => {
-			const updatedTicketAmounts = { ...prev };
-
-			if (ticketAmount === 0) {
-				// Remove the ticket if the amount is 0
-				delete updatedTicketAmounts[ticket.id];
-			} else {
-				// Update or add the ticket amount if it's greater than 0
-				updatedTicketAmounts[ticket.id] = { ticketAmount: ticketAmount, ticket, eventId: eventInfo.id };
-			}
-
-			return updatedTicketAmounts;
-		});
-	};
-
+	// Check if the event is still available
 	const checkIfEventAvailable = (timestampObj) => {
 		const unixTimestamp = timestampObj._seconds;
-
 		const currentTimestamp = Math.floor(Date.now() / 1000);
-
 		return unixTimestamp > currentTimestamp;
 	};
 
 	const isEventAvailable = eventInfo && checkIfEventAvailable(eventInfo.timeFrame.endDate);
 
+	// Disable button if no tickets selected or event is unavailable
 	const isButtonDisabled = Object.values(ticketAmounts).length <= 0 || Object.values(ticketAmounts).every((ticket) => ticket.ticketAmount === 0) || !isEventAvailable;
 
+	// Dispatch ticket amounts to Redux
 	useEffect(() => {
 		dispatch(setSavedTickets(ticketAmounts));
-	}, [ticketAmounts]);
+	}, [ticketAmounts, dispatch]);
 
-	const handleClickOutside = () => {
-		isOpen(false);
-	};
-
+	// Handle click outside to close the banner
+	const handleClickOutside = () => isOpen(false);
 	const ref = useOutsideClick(handleClickOutside);
 
+	// Save event to user's favorites
 	const handleSaveEvent = async () => {
+		setLoading(true);
 		try {
 			if (!user) {
 				setMessage("Bitte melden Sie sich an!");
@@ -143,7 +123,6 @@ const EventDetailsPage = ({ params }) => {
 			}
 
 			const response = await saveEventToUserFavorites(eventInfo.id, user);
-
 			if (response === "success") {
 				setMessage("Das Event wurde gespeichert!");
 				setSuccesResponse(true);
@@ -153,13 +132,16 @@ const EventDetailsPage = ({ params }) => {
 				setErrorResponse(true);
 			}
 		} catch (error) {
-			console.log(error);
 			setMessage("Ein unbekannter Fehler ist aufgetreten!");
 			setErrorResponse(true);
+		} finally {
+			setLoading(false);
 		}
 	};
 
+	// Delete event from user's favorites
 	const handleDeleteEvent = async () => {
+		setLoading(true);
 		try {
 			if (!user) {
 				setMessage("Bitte melden Sie sich an!");
@@ -168,7 +150,6 @@ const EventDetailsPage = ({ params }) => {
 			}
 
 			const response = await deleteEventFromUserFavorites(eventInfo.id, user);
-
 			if (response === "success") {
 				setMessage("Das Event wurde entfernt!");
 				setSuccesResponse(true);
@@ -178,12 +159,14 @@ const EventDetailsPage = ({ params }) => {
 				setErrorResponse(true);
 			}
 		} catch (error) {
-			console.log(error);
 			setMessage("Ein unbekannter Fehler ist aufgetreten!");
 			setErrorResponse(true);
+		} finally {
+			setLoading(false);
 		}
 	};
 
+	// Feedback for saving/deleting event
 	useEffect(() => {
 		(errorResponse || successResponse) &&
 			setTimeout(() => {
@@ -193,30 +176,19 @@ const EventDetailsPage = ({ params }) => {
 			}, 10000);
 	}, [errorResponse, successResponse]);
 
+	// Check if the event is already saved
 	useEffect(() => {
 		const checkIfEventIsSaved = async () => {
 			if (user) {
 				const userFromFirebase = await getUserFromDatabase(user.uid);
-
-				if (userFromFirebase && userFromFirebase[savedEventsDocumentName]) {
-					// Check if the event is saved in the user's favourites
-					setIsEventSaved(userFromFirebase[savedEventsDocumentName].includes(eventInfo?.id));
-				}
+				setIsEventSaved(userFromFirebase?.[savedEventsDocumentName]?.includes(eventInfo?.id));
 			}
 		};
 
-		if (eventInfo) {
-			checkIfEventIsSaved();
-		}
-	}, [user, eventInfo]);
-
-	const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
-	const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
-	const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
-	const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
+		if (eventInfo) checkIfEventIsSaved();
+	}, [user, eventInfo, savedEventsDocumentName]);
 
 	if (isLoading) return <LoadingSpinner />;
-
 	if (error) return <ErrorComponent />;
 
 	return (
@@ -229,7 +201,7 @@ const EventDetailsPage = ({ params }) => {
 				</div>
 
 				<div className="flex flex-col justify-center items-center md:flex-row md:justify-end md:items-end">
-					<button onClick={isEventSaved ? handleDeleteEvent : handleSaveEvent} className="bg-clubbery-orange transition-transform transform active:scale-95 hover:scale-95 w-full md:w-auto flex justify-center items-center py-2 px-4 rounded-md mb-4 md:mb-0 md:mr-2">
+					<button onClick={isEventSaved ? handleDeleteEvent : handleSaveEvent} aria-label={isEventSaved ? "Event gespeichert" : "Event merken"} className="bg-clubbery-orange transition-transform transform active:scale-95 hover:scale-95 w-full md:w-auto flex justify-center items-center py-2 px-4 rounded-md mb-4 md:mb-0 md:mr-2">
 						{isEventSaved ? <FaBookmark className="mr-1" size={27} /> : <FaRegBookmark className="mr-1" size={27} />}
 						{isEventSaved ? "Gespeichert" : "Merken"}
 					</button>
@@ -323,23 +295,22 @@ const EventDetailsPage = ({ params }) => {
 				<div className="col-span-1 md:col-start-3 md:row-start-1 md:row-end-3 md:col-end-3">
 					<div className="p-6 bg-white bg-opacity-10 text-white rounded-lg h-auto md:sticky md:top-24">
 						<h2 className="text-2xl mb-6">Tickets</h2>
-						{ticketList ? (
+						{ticketList && (
 							<div className="grid grid-cols-1 gap-6">
 								{ticketList.map((ticket) => (
-									<EventTicket key={ticket.id} ticket={ticket} handleOnClick={handleShowBanner} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]?.ticketAmount} />
+									<EventTicket key={ticket.id} ticket={ticket} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketAmounts[ticket.id]?.ticketAmount} />
 								))}
 							</div>
-						) : (
-							""
 						)}
+
 						{user ? (
 							<Link href={`/payment_checkout/${eventInfo.id}`}>
-								<button disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
+								<button aria-label="Kaufen" disabled={isButtonDisabled} className={`clubbery_main_button w-full mt-6 ${isButtonDisabled ? "opacity-60" : "hover_button_animation"}`}>
 									Kaufen
 								</button>
 							</Link>
 						) : (
-							<button disabled className={`clubbery_main_button w-full mt-6 opacity-60`}>
+							<button aria-label="Bitte Melden Sie sich an" disabled className={`clubbery_main_button w-full mt-6 opacity-60`}>
 								Bitte Melden Sie sich an
 							</button>
 						)}

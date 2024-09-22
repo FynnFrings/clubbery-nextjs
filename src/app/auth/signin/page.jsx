@@ -12,9 +12,10 @@ import { setAuthProvider } from "@/app/store/useSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import loadable from "@loadable/component";
 
-const Signup = () => {
-	const router = useRouter();
+const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
 
+const Signin = () => {
+	const router = useRouter();
 	const dispatch = useDispatch();
 
 	const [loadingScreen, setLoadingScreen] = useState(false);
@@ -27,22 +28,29 @@ const Signup = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleShowAuthErrorMessage = () => {
-		!errorAuthMessageBanner && setErrorAuthMessageBanner(true);
-	};
+	// Show auth error message banner for 5 seconds
+	const handleShowAuthErrorMessage = useCallback(() => {
+		if (!errorAuthMessageBanner) {
+			setErrorAuthMessageBanner(true);
+		}
+	}, [errorAuthMessageBanner]);
 
+	// Update email state
 	const handleEmailChange = useCallback((e) => {
 		setEmail(e.target.value);
 	}, []);
 
+	// Update password state
 	const handlePasswordChange = useCallback((e) => {
 		setPassword(e.target.value);
 	}, []);
 
+	// Handle Google sign-in
 	const signInGoogle = async () => {
 		try {
 			dispatch(setAuthProvider("google"));
 			await signInWithGoogle();
+			router.push("/profile");
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -50,9 +58,11 @@ const Signup = () => {
 		}
 	};
 
+	// Handle Apple sign-in
 	const signInApple = async () => {
 		try {
 			await signInWithApple();
+			router.push("/profile");
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -60,12 +70,14 @@ const Signup = () => {
 		}
 	};
 
-	const signInWithCredentails = useCallback(
+	// Handle email/password sign-in
+	const signInWithCredentials = useCallback(
 		async (event) => {
 			event.preventDefault();
 
 			try {
 				const response = await signInWithEmail(email, password);
+
 				if (response === "success") {
 					dispatch(setAuthProvider("credentials"));
 					router.push("/profile");
@@ -75,28 +87,23 @@ const Signup = () => {
 					handleShowAuthErrorMessage();
 				}
 			} catch (error) {
+				console.log(error);
 				setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
 				handleShowAuthErrorMessage();
 			}
 		},
-		[email, password]
+		[email, password, dispatch, router, handleShowAuthErrorMessage]
 	);
 
+	// Check for redirect result (OAuth logins like Google/Apple)
 	useEffect(() => {
-		errorAuthMessageBanner &&
-			setTimeout(() => {
-				setErrorAuthMessageBanner(false);
-				setErrorAuthMessage("");
-			}, 5000);
-	}, [errorAuthMessageBanner]);
-
-	useEffect(() => {
-		const handleAsynGetResultFromRedict = async () => {
+		const handleAsyncRedirectResult = async () => {
 			setLoadingScreen(true);
+
 			try {
 				const response = await handleRedirectResult();
 
-				if (response === null) return;
+				if (!response) return;
 
 				if (response === "success") {
 					router.push("/profile");
@@ -113,11 +120,23 @@ const Signup = () => {
 				setLoadingScreen(false);
 			}
 		};
-		handleAsynGetResultFromRedict();
-	}, []);
 
-	const LoadingSpinner = loadable(() => import("@/components/LoadingSpinner"));
+		handleAsyncRedirectResult();
+	}, [router, handleShowAuthErrorMessage]);
 
+	// Hide the error banner after 5 seconds
+	useEffect(() => {
+		if (errorAuthMessageBanner) {
+			const timer = setTimeout(() => {
+				setErrorAuthMessageBanner(false);
+				setErrorAuthMessage("");
+			}, 5000);
+
+			return () => clearTimeout(timer); // Cleanup the timeout
+		}
+	}, [errorAuthMessageBanner]);
+
+	// Display loading spinner if loading state is active
 	if (loadingScreen) return <LoadingSpinner />;
 
 	return (
@@ -153,7 +172,7 @@ const Signup = () => {
 						<span className="w-1/4 border border-white"></span>
 					</p>
 
-					<form onSubmit={signInWithCredentails} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
+					<form onSubmit={signInWithCredentials} className="flex flex-col items-center gap-y-8 font-light text-lg text-zinc-100">
 						<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type="email" placeholder="E-mail" required onChange={handleEmailChange} />
 						<div className="relative w-full">
 							<input className="w-full bg-transparent border border-white rounded-xl py-2 pl-2 focus:!shadow-[#CC7503] focus:!shadow-input focus:!outline-offset-0 focus:!outline-none" type={showPassword ? "text" : "password"} placeholder="Passwort" required onChange={handlePasswordChange} />
@@ -181,4 +200,4 @@ const Signup = () => {
 	);
 };
 
-export default Signup;
+export default Signin;

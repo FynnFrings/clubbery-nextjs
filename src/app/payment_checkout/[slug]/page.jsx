@@ -1,28 +1,37 @@
 "use client";
 
-import TicketCard from "@/components/Ticket/TicketCard";
-import { useSelector } from "react-redux";
-import { useEffect, useState, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import axios from "axios";
 import useAuth from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import loadable from "@loadable/component";
+import { userBuyTicketFirstAPICall } from "@/app/libs/userActions";
+import { setSavedTickets } from "@/app/store/useSlice";
+
+const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
+const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
 
 const PaymentCheckout = ({ params }) => {
 	const { user, status } = useAuth();
 
 	const router = useRouter();
 
+	const dispatch = useDispatch();
+
 	const savedTickets = useSelector((state) => state.auth.savedTickets);
 
-	const [paymentError, setPaymentError] = useState(false);
+	const [allSavedTickets, setAllSavedTickets] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
 
-	const [paymentErrorMessage, setPaymentErrorMessage] = useState("");
+	const [paymentError, setPaymentError] = useState({
+		hasError: false,
+		message: "",
+	});
 
-	const filteredTickets =
-		savedTickets && Object.values(savedTickets).length > 0
-			? Object.values(savedTickets)
+	// Memoize filteredTickets to avoid recalculations on each render
+	const filteredTickets = useMemo(() => {
+		return allSavedTickets && Object.values(allSavedTickets).length > 0
+			? Object.values(allSavedTickets)
 					.filter((ticket) => ticket.eventId === params.slug)
 					.map((ticket) => ({
 						...ticket,
@@ -32,96 +41,106 @@ const PaymentCheckout = ({ params }) => {
 						},
 					}))
 			: [];
+	}, [allSavedTickets, params.slug]);
 
-	const [isMounted, setIsMounted] = useState(false);
+	const onlyTicketObjects = useMemo(() => filteredTickets.map((ticket) => ticket.ticket), [filteredTickets]);
 
-	const calculateTotalPrice = (savedTickets) => {
-		let totalPrice = 0;
+	// Calculate total price only when allSavedTickets change
+	const calculateTotalPrice = useCallback((tickets) => {
+		return Object.values(tickets).reduce((totalPrice, ticketObject) => totalPrice + ticketObject.ticketAmount * ticketObject.ticket.price, 0);
+	}, []);
 
-		Object.values(savedTickets).forEach((ticketObject) => {
-			const ticketAmount = ticketObject.ticketAmount;
-			const ticketPrice = ticketObject.ticket.price;
+	const allTicketsFullPrice = useMemo(() => (filteredTickets.length > 0 ? calculateTotalPrice(filteredTickets) : 0), [filteredTickets, calculateTotalPrice]);
 
-			totalPrice += ticketAmount * ticketPrice;
-		});
-
-		return totalPrice;
-	};
-
-	const onlyTicketObjects = filteredTickets.map((ticket) => ticket.ticket);
-
-	const handleBuyTickets = async (event) => {
-		event.preventDefault();
-
-		const requestBody = {
-			email: user.email,
-			firebaseCustomerId: user.uid,
-			voucherCode: null,
-			eventId: params.slug,
-			items: [...onlyTicketObjects],
-		};
-
-		try {
-			const response = await axios.post(
-				"https://stripepaymentintentrequest-qh42lmu4jq-uc.a.run.app",
-				requestBody, // Pass the requestBody as the body
-				{
-					headers: {
-						Accept: "application/json, text/plain, */*",
-						"Content-Type": "application/json",
-						"Access-Control-Allow-Origin": "*",
-					},
+	const handleTicketAmountChange = useCallback(
+		(ticket, ticketAmount) => {
+			setAllSavedTickets((prev) => {
+				if (prev[ticket.id]?.ticketAmount === ticketAmount) {
+					return prev;
 				}
-			);
 
-			if (response.status === 200) {
-				const data = response.data;
+				const updatedTicketAmounts = { ...prev };
 
-				router.push(data.session.url);
-			} else {
-				setPaymentErrorMessage("Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.");
-				setPaymentError(true);
+				if (ticketAmount === 0) {
+					delete updatedTicketAmounts[ticket.id];
+				} else {
+					updatedTicketAmounts[ticket.id] = {
+						ticketAmount: ticketAmount,
+						ticket,
+						eventId: params.slug,
+					};
+				}
+
+				return updatedTicketAmounts;
+			});
+		},
+		[params.slug] // Only re-create the function when `params.slug` changes
+	);
+
+	// API call for buying tickets memoized with useCallback
+	const handleBuyTickets = useCallback(
+		async (event) => {
+			event.preventDefault();
+			try {
+				const response = await userBuyTicketFirstAPICall(user.email, user.uid, params.slug, onlyTicketObjects);
+
+				if (response.status === 200) {
+					router.push(response.data.session.url);
+				} else {
+					setPaymentError({
+						hasError: true,
+						message: "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+					});
+				}
+			} catch (error) {
+				setPaymentError({
+					hasError: true,
+					message: "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+				});
+				console.error("Error during the POST request:", error);
 			}
-		} catch (error) {
-			setPaymentErrorMessage("Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.");
-			setPaymentError(true);
-			console.error("Error during the POST request:", error);
+		},
+		[user, params.slug, onlyTicketObjects, router]
+	);
+
+	useEffect(() => {
+		dispatch(setSavedTickets(allSavedTickets));
+	}, [allSavedTickets, dispatch]);
+
+	// Redirect unauthenticated users
+	useEffect(() => {
+		if (status === "unauthenticated") {
+			router.push("/auth/signin");
 		}
-	};
+	}, [status, router]);
 
-	const allTicketsFullPrice = filteredTickets && filteredTickets.length > 0 && calculateTotalPrice(savedTickets);
+	// Automatically clear payment error after 5 seconds
+	useEffect(() => {
+		if (paymentError.hasError) {
+			const timer = setTimeout(() => {
+				setPaymentError({ hasError: false, message: "" });
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [paymentError]);
 
+	// Simple mounted state management
+	const [isMounted, setIsMounted] = useState(false);
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
-
-	useEffect(() => {
-		if (status === "unauthenthicated") {
-			router.push("/auth/signin");
-		}
-	});
-
-	useEffect(() => {
-		paymentError &&
-			setTimeout(() => {
-				setPaymentError(false);
-				setPaymentErrorMessage("");
-			}, 5000);
-	}, [paymentError]);
-
-	const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
 
 	if (!isMounted) return <LoadingSpinner />;
 
 	return (
 		<>
-			<form onSubmit={handleBuyTickets} className="flex flex-col items-center py-8">
+			<div className="flex flex-col items-center py-8">
 				<h1 className="text-white text-2xl md:text-4xl font-semibold mb-8 text-center">Deine Ticketübersicht</h1>
 
-				{filteredTickets && filteredTickets.length > 0 ? (
+				{filteredTickets.length > 0 ? (
 					<div className="bg-white bg-opacity-10 p-5 rounded-lg w-full md:w-1/2 xl:w-1/3 flex flex-col gap-5">
-						{Object.values(filteredTickets).map((ticketObject, index) => (
-							<TicketCard ticketObject={ticketObject} key={index} />
+						{filteredTickets.map((ticketObject, index) => (
+							<EventTicket key={ticketObject.ticket.id} ticket={ticketObject.ticket} onTicketAmountChange={handleTicketAmountChange} parentTicketAmount={ticketObject?.ticketAmount} />
 						))}
 					</div>
 				) : (
@@ -129,16 +148,16 @@ const PaymentCheckout = ({ params }) => {
 				)}
 
 				{/* Kaufen Button at the bottom */}
-				{filteredTickets && filteredTickets.length > 0 && (
+				{filteredTickets.length > 0 && (
 					<div className="mt-10 w-full flex justify-center">
-						<button type="submit" className="clubbery_main_button hover_button_animation w-full md:w-1/3 py-3 text-lg">
-							Kaufen für {allTicketsFullPrice ?? 0} &euro;
+						<button onClick={handleBuyTickets} className="clubbery_main_button hover_button_animation w-full md:w-1/3 py-3 text-lg">
+							Kaufen für {allTicketsFullPrice} &euro;
 						</button>
-						`
 					</div>
 				)}
-			</form>
-			{paymentError && <ContactResponseMessage fill={"bg-red-300"} background={"bg-red-500"} response={paymentErrorMessage} />}
+			</div>
+
+			{paymentError.hasError && <ContactResponseMessage fill={"bg-red-300"} background={"bg-red-500"} response={paymentError.message} />}
 		</>
 	);
 };

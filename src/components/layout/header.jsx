@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useScrollPosition } from "@/app/hooks/useScrollPosition";
 import useAuth from "@/app/hooks/useAuth";
+import { useSelector, useDispatch } from "react-redux";
 
 const Header = () => {
-	const { user, status } = useAuth();
+	const { user } = useAuth();
 
 	const [menu, setMenu] = useState(false);
 
@@ -18,6 +19,7 @@ const Header = () => {
 	};
 
 	const scrollPosition = useScrollPosition();
+
 	return (
 		<header className="sticky top-0 z-20 mb-8 lg:mb-5">
 			<div className={`${scrollPosition > 0 || menu ? "bg-[#262730]" : "bg-transparent"} ${scrollPosition > 0 && !menu ? "shadow-lg" : "shadow-none"} transition-colors ease-in duration-100 flex flex-row justify-between items-center w-full text-white py-4 px-5 md:px-10`}>
@@ -45,7 +47,7 @@ const Header = () => {
 							<p className="hover_text_animation">Kontakt</p>
 						</Link>
 					</li>
-					{status === "authenthicated" ? (
+					{user ? (
 						<li>
 							<Link onClick={() => handleOnClick()} href="/profile">
 								<p className="hover_text_animation">Profil</p>

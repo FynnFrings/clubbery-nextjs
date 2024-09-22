@@ -1,42 +1,59 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
-import { useRouter } from "next/navigation";
-import loadable from "@loadable/component";
-import axios from "axios";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorComponent from "@/components/ErrorComponent";
-import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "@/app/store/useSlice";
 import { getUserFromDatabase } from "../libs/userFirebaseActions";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorComponent from "@/components/ErrorComponent";
 import Link from "next/link";
+import loadable from "@loadable/component";
+
+const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
+const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
+const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
+const AccountDeletionModal = loadable(() => import("@/components/Auth/DeleteUserAccountModal"));
+const ChangeUserDisplayNameModal = loadable(() => import("@/components/Auth/ChangeUserDisplayNameModal"));
 
 const User = () => {
-	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
+	const SAVED_EVENTS_DOCUMENT_NAME = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
 
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
 
-	const router = useRouter();
+	const { user, status } = useAuth();
 
 	const dispatch = useDispatch();
 
-	const { user, status } = useAuth();
+	const router = useRouter();
 
 	const provider = useSelector((state) => state.auth.provider);
 
-	const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-
-	const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
-
-	const [showChangeNameModal, setShowChangeNameModal] = useState(false);
-
 	const [savedEventsUID, setSavedEventsUID] = useState([]);
 	const [savedEvents, setSavedEvents] = useState([]);
+
 	const [loadingEvents, setLoadingEvents] = useState(true);
 
-	const displayUserName = user?.displayName ?? user?.email;
+	const [errorFetchingEvents, setErrorFetchingEvents] = useState(false); // New error state
+
+	// Modal state
+	const [modalState, setModalState] = useState({
+		showChangePasswordModal: false,
+		showChangeEmailModal: false,
+		showChangeNameModal: false,
+		showAccountDeletionModal: false,
+	});
+
+	// Helper functions to toggle modals
+	const toggleModal = useCallback((modalName, isVisible) => {
+		setModalState((prevState) => ({
+			...prevState,
+			[modalName]: isVisible,
+		}));
+	}, []);
 
 	const handleSignOut = async () => {
 		try {
@@ -44,106 +61,78 @@ const User = () => {
 			router.push("/");
 			await userSignOut();
 		} catch (error) {
-			console.log(error);
+			console.error("Error during sign out:", error);
 		}
 	};
-	const [showAccountDeletionModal, setShowAccountDeletionModal] = useState(false);
 
-	const handleShowAccountDeletionModal = () => {
-		setShowAccountDeletionModal(true);
-	};
+	const displayUserName = user?.displayName ?? user?.email;
 
-	const handleCloseAccountDeletionModal = () => {
-		setShowAccountDeletionModal(false);
-	};
-
-	const handleShowChangePasswordBanner = () => {
-		setShowChangePasswordModal(true);
-	};
-
-	const handleCloseModal = () => {
-		setShowChangePasswordModal(false);
-	};
-
-	const handleShowEmailModal = () => {
-		setShowChangeEmailModal(true);
-	};
-
-	const handleCloseEmailModal = () => {
-		setShowChangeEmailModal(false);
-	};
-
-	const handleOpenModalChangeDisplayName = () => {
-		setShowChangeNameModal(true);
-	};
-
-	const handleCloseModalChangeDisplayName = () => {
-		setShowChangeNameModal(false);
-	};
-
+	// Set user info to redux
 	useEffect(() => {
 		if (user) {
-			const currnetUser = {
+			const currentUser = {
 				displayName: user.displayName,
 				email: user.email,
 				emailVerified: user.emailVerified,
 				uid: user.uid,
 			};
-			dispatch(setUser(currnetUser));
+			dispatch(setUser(currentUser));
 		}
-	}, [user]);
+	}, [user, dispatch]);
 
-	// Fetch saved events
+	// Fetch saved event IDs
 	useEffect(() => {
-		const checkIfEventIsSaved = async () => {
+		const fetchSavedEventUIDs = async () => {
 			if (user) {
-				const userFromFirebase = await getUserFromDatabase(user.uid);
+				try {
+					const userFromFirebase = await getUserFromDatabase(user.uid);
 
-				if (userFromFirebase && userFromFirebase[savedEventsDocumentName] && userFromFirebase[savedEventsDocumentName].length > 0) {
-					setSavedEventsUID(userFromFirebase[savedEventsDocumentName]);
+					if (userFromFirebase?.[SAVED_EVENTS_DOCUMENT_NAME]?.length > 0) {
+						setSavedEventsUID(userFromFirebase[SAVED_EVENTS_DOCUMENT_NAME]);
+					}
+				} catch (error) {
+					console.error("Error fetching saved events from Firebase:", error);
 				}
 			}
 		};
-		if (user) {
-			checkIfEventIsSaved();
-		}
-	}, [user, savedEventsDocumentName]);
 
-	// Fetch event details for saved events
+		if (user) {
+			fetchSavedEventUIDs();
+		}
+	}, [user, SAVED_EVENTS_DOCUMENT_NAME]);
+
+	// Fetch saved event details
 	useEffect(() => {
 		const fetchSavedEvents = async () => {
 			if (savedEventsUID.length > 0) {
 				try {
 					setLoadingEvents(true);
-					const eventRequests = savedEventsUID.map((eventUID) => axios.post(`${GET_EVENT_BY_ID}`, { id: `${eventUID}` }));
+
+					setErrorFetchingEvents(false);
+
+					const eventRequests = savedEventsUID.map((eventUID) => axios.post(`${GET_EVENT_BY_ID}`, { id: eventUID }));
+
 					const events = await Promise.all(eventRequests);
-					setSavedEvents(events.map((response) => response.data));
+
+					setSavedEvents(events.map((res) => res.data));
 				} catch (error) {
 					console.error("Error fetching saved events:", error);
+					setErrorFetchingEvents(true);
 				} finally {
 					setLoadingEvents(false);
 				}
 			} else {
+				setSavedEvents([]);
 				setLoadingEvents(false);
 			}
 		};
 
-		if (savedEventsUID.length > 0) {
-			fetchSavedEvents();
-		} else {
-			setSavedEvents([]);
-		}
+		fetchSavedEvents();
 	}, [savedEventsUID, GET_EVENT_BY_ID]);
 
-	const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
-	const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
-	const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
-	const AccountDeletionModal = loadable(() => import("@/components/Auth/DeleteUserAccountModal"));
-	const ChangeUserDisplayNameModal = loadable(() => import("@/components/Auth/ChangeUserDisplayNameModal"));
-
 	if (status === "loading") return <LoadingSpinner />;
-	if (status === "authenthicated" && user && !user.emailVerified) return <ConfirmationEmail />;
-	if (status === "unauthenthicated") return <ErrorComponent />;
+	if (status === "authenticated" && user && !user.emailVerified) return <ConfirmationEmail />;
+	if (status === "unauthenticated") return <ErrorComponent />;
 
 	return (
 		<>
@@ -159,9 +148,10 @@ const User = () => {
 						<div>
 							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gespeicherte Events</h2>
 							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
-								{loadingEvents ? (
-									<p className="text-lg">Aktualisieren...</p>
-								) : savedEvents.length > 0 ? (
+								{loadingEvents && <p className="text-lg">Wird aktualisiert...</p>}
+								{errorFetchingEvents && <p>Ein Fehler ist aufgetreten. Versuchen Sie später nochmal.</p>}
+								{!loadingEvents && !errorFetchingEvents && savedEvents.length === 0 && <p className="text-lg">Du hast noch keine Events gespeichert.</p>}
+								{savedEvents.length > 0 && (
 									<ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 										{savedEvents.map((event) => (
 											<li key={event.itemId}>
@@ -173,8 +163,6 @@ const User = () => {
 											</li>
 										))}
 									</ul>
-								) : (
-									<p className="text-lg">Du hast noch keine Events gespeichert.</p>
 								)}
 							</div>
 						</div>
@@ -191,22 +179,22 @@ const User = () => {
 
 					<div className="w-full flex flex-col md:flex-row gap-5">
 						{provider === "credentials" && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowChangePasswordBanner}>
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangePasswordModal", true)}>
 								Passwort zurücksetzen
 							</button>
 						)}
 
 						{provider === "credentials" && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowEmailModal}>
+							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangeEmailModal", true)}>
 								E-mail ändern
 							</button>
 						)}
 
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleOpenModalChangeDisplayName}>
+						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangeNameModal", true)}>
 							Benutzername ändern
 						</button>
 
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={handleShowAccountDeletionModal}>
+						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showAccountDeletionModal", true)}>
 							Konto entfernen
 						</button>
 					</div>
@@ -219,10 +207,10 @@ const User = () => {
 				</div>
 			</div>
 
-			{showChangePasswordModal && <ChangePasswordModal onClose={handleCloseModal} user={user} />}
-			{showChangeEmailModal && <ChangeEmailModal onClose={handleCloseEmailModal} />}
-			{showAccountDeletionModal && <AccountDeletionModal onClose={handleCloseAccountDeletionModal} />}
-			{showChangeNameModal && <ChangeUserDisplayNameModal user={user} onClose={handleCloseModalChangeDisplayName} />}
+			{modalState.showChangePasswordModal && <ChangePasswordModal onClose={() => toggleModal("showChangePasswordModal", false)} />}
+			{modalState.showChangeEmailModal && <ChangeEmailModal onClose={() => toggleModal("showChangeEmailModal", false)} />}
+			{modalState.showChangeNameModal && <ChangeUserDisplayNameModal onClose={() => toggleModal("showChangeNameModal", false)} />}
+			{modalState.showAccountDeletionModal && <AccountDeletionModal onClose={() => toggleModal("showAccountDeletionModal", false)} />}
 		</>
 	);
 };
