@@ -1,5 +1,5 @@
 // lib/firebase.js
-import { signInWithRedirect, signInWithPopup, GoogleAuthProvider, OAuthProvider, signInWithEmailAndPassword, signOut, getRedirectResult, createUserWithEmailAndPassword, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from "firebase/auth";
+import { signInWithRedirect, GoogleAuthProvider, OAuthProvider, signInWithEmailAndPassword, signOut, getRedirectResult, createUserWithEmailAndPassword, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from "firebase/auth";
 import { auth } from "../firebase";
 
 const googleProvider = new GoogleAuthProvider();
@@ -7,13 +7,18 @@ const appleProvider = new OAuthProvider("apple.com");
 
 // Function to handle Google Sign-In with Redirect
 export const signInWithGoogle = async () => {
+	console.log("🚀 ~ googleProvider:", googleProvider);
+	console.log("🚀 ~ auth:", auth);
+
 	return await signInWithRedirect(auth, googleProvider);
 };
 
 // Function to handle Apple Sign-In with Redirect
-export const signInWithApple = async () => {
+export const signInWithApple = () => {
 	appleProvider.addScope("email");
 	appleProvider.addScope("name");
+	console.log("🚀 ~ appleProvider:", appleProvider);
+	console.log("🚀 ~ auth:", auth);
 
 	return signInWithRedirect(auth, appleProvider);
 };
