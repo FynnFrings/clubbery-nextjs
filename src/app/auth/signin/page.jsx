@@ -45,7 +45,6 @@ const Signin = () => {
 		setPassword(e.target.value);
 	}, []);
 
-	// Handle Google sign-in
 	const signInGoogle = async () => {
 		try {
 			dispatch(setAuthProvider("google"));
@@ -57,7 +56,6 @@ const Signin = () => {
 		}
 	};
 
-	// Handle Apple sign-in
 	const signInApple = async () => {
 		try {
 			dispatch(setAuthProvider("apple"));
