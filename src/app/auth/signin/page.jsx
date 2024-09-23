@@ -50,7 +50,6 @@ const Signin = () => {
 		try {
 			dispatch(setAuthProvider("google"));
 			await signInWithGoogle();
-			router.push("/profile");
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -61,8 +60,9 @@ const Signin = () => {
 	// Handle Apple sign-in
 	const signInApple = async () => {
 		try {
-			await signInWithApple();
-			router.push("/profile");
+			dispatch(setAuthProvider("apple"));
+			const user = await signInWithApple();
+			console.log("🚀 ~ signInApple ~ user:", user);
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
