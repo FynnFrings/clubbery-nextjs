@@ -56,10 +56,10 @@ const Signin = () => {
 		}
 	};
 
-	const signInApple = async () => {
+	const signInApple = () => {
 		try {
 			dispatch(setAuthProvider("apple"));
-			await signInWithApple();
+			signInWithApple();
 		} catch (error) {
 			console.log(error);
 			setErrorAuthMessage("Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");

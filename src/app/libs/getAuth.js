@@ -15,7 +15,7 @@ export const signInWithApple = async () => {
 	appleProvider.addScope("email");
 	appleProvider.addScope("name");
 
-	return await signInWithRedirect(auth, appleProvider);
+	return signInWithRedirect(auth, appleProvider);
 };
 
 // Function to handle Email and Password Sign-In
