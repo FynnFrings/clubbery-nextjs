@@ -7,7 +7,6 @@ import { AiFillPieChart } from "react-icons/ai";
 import { CgBrowser } from "react-icons/cg";
 import { BiSolidCoupon } from "react-icons/bi";
 import { FaInstagram, FaRegBookmark, FaWhatsapp, FaBookmark } from "react-icons/fa";
-import useOutsideClick from "@/app/hooks/useOutsideClick";
 import useSWR from "swr";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import convertUnixDateToFullDate from "@/helpers/convertUnixDateFullDate";
@@ -58,14 +57,17 @@ const EventDetailsPage = ({ params }) => {
 
 	const totalAmountOfTickets = useMemo(() => ticketList && calculateTotalAmount(ticketList), [ticketList, calculateTotalAmount]);
 
-	const [open, isOpen] = useState(false);
 	const [showBanner, setShowBanner] = useState(false);
+
 	const [message, setMessage] = useState("");
+
 	const [errorResponse, setErrorResponse] = useState(false);
+
 	const [successResponse, setSuccesResponse] = useState(false);
+
 	const [isEventSaved, setIsEventSaved] = useState(false);
+
 	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
-	const [loading, setLoading] = useState(false); // Loading state for save actions
 
 	// Show/hide the banner
 	const handleShowBanner = () => !showBanner && setShowBanner(true);
@@ -108,13 +110,8 @@ const EventDetailsPage = ({ params }) => {
 		dispatch(setSavedTickets(ticketAmounts));
 	}, [ticketAmounts, dispatch]);
 
-	// Handle click outside to close the banner
-	const handleClickOutside = () => isOpen(false);
-	const ref = useOutsideClick(handleClickOutside);
-
 	// Save event to user's favorites
 	const handleSaveEvent = async () => {
-		setLoading(true);
 		try {
 			if (!user) {
 				setMessage("Bitte melden Sie sich an!");
@@ -134,14 +131,11 @@ const EventDetailsPage = ({ params }) => {
 		} catch (error) {
 			setMessage("Ein unbekannter Fehler ist aufgetreten!");
 			setErrorResponse(true);
-		} finally {
-			setLoading(false);
 		}
 	};
 
 	// Delete event from user's favorites
 	const handleDeleteEvent = async () => {
-		setLoading(true);
 		try {
 			if (!user) {
 				setMessage("Bitte melden Sie sich an!");
@@ -161,8 +155,6 @@ const EventDetailsPage = ({ params }) => {
 		} catch (error) {
 			setMessage("Ein unbekannter Fehler ist aufgetreten!");
 			setErrorResponse(true);
-		} finally {
-			setLoading(false);
 		}
 	};
 
@@ -206,7 +198,7 @@ const EventDetailsPage = ({ params }) => {
 						{isEventSaved ? "Gespeichert" : "Merken"}
 					</button>
 					{/* {alert && <BusinessMerkenResponseMessage />} */}
-					<button onClick={handleShowBanner} className="border border-white text-white transition-all active:scale-95 hover:bg-white hover:bg-opacity-10 w-full md:w-auto text-center py-2 px-4 rounded-md" ref={ref}>
+					<button onClick={handleShowBanner} className="border border-white text-white transition-all active:scale-95 hover:bg-white hover:bg-opacity-10 w-full md:w-auto text-center py-2 px-4 rounded-md">
 						Kontaktieren
 					</button>
 				</div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -14,10 +14,6 @@ import Link from "next/link";
 import loadable from "@loadable/component";
 
 const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
-const ChangePasswordModal = loadable(() => import("@/components/Auth/ChangePasswordModal"));
-const ChangeEmailModal = loadable(() => import("@/components/Auth/ChangeEmailModal"));
-const AccountDeletionModal = loadable(() => import("@/components/Auth/DeleteUserAccountModal"));
-const ChangeUserDisplayNameModal = loadable(() => import("@/components/Auth/ChangeUserDisplayNameModal"));
 
 const User = () => {
 	const SAVED_EVENTS_DOCUMENT_NAME = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
@@ -39,22 +35,6 @@ const User = () => {
 	const [loadingEvents, setLoadingEvents] = useState(true);
 
 	const [errorFetchingEvents, setErrorFetchingEvents] = useState(false); // New error state
-
-	// Modal state
-	const [modalState, setModalState] = useState({
-		showChangePasswordModal: false,
-		showChangeEmailModal: false,
-		showChangeNameModal: false,
-		showAccountDeletionModal: false,
-	});
-
-	// Helper functions to toggle modals
-	const toggleModal = useCallback((modalName, isVisible) => {
-		setModalState((prevState) => ({
-			...prevState,
-			[modalName]: isVisible,
-		}));
-	}, []);
 
 	const handleSignOut = async () => {
 		try {
@@ -162,7 +142,7 @@ const User = () => {
 									<ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 										{savedEvents.map((event) => (
 											<li key={event.itemId}>
-												<Link href={`/events/${event.itemId}`} className="">
+												<Link href={`/events/${event.itemId}`}>
 													<div style={{ backgroundImage: `url(${event.images[0].url}})` }} className="p-4 h-48 rounded-lg flex justify-center items-center bg-cover bg-center bg-blend-darken bg-[#0000004f] transition-transform duration-200 hover:scale-95">
 														<h3 className="text-lg font-semibold mb-2">{event.details.title}</h3>
 													</div>
@@ -184,26 +164,26 @@ const User = () => {
 						</div>
 					</div>
 
-					<div className="w-full flex flex-col md:flex-row gap-5">
+					<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
 						{provider === "credentials" && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangePasswordModal", true)}>
+							<Link href="/profile/change-password" className="clubbery_main_button hover_button_animation w-full py-3 text-lg">
 								Passwort zurücksetzen
-							</button>
+							</Link>
 						)}
 
 						{provider === "credentials" && (
-							<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangeEmailModal", true)}>
+							<Link href="/profile/change-email" className="clubbery_main_button hover_button_animation w-full py-3 text-lg">
 								E-mail ändern
-							</button>
+							</Link>
 						)}
 
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showChangeNameModal", true)}>
+						<Link href="/profile/change-name" className="clubbery_main_button hover_button_animation w-full py-3 text-lg">
 							Benutzername ändern
-						</button>
+						</Link>
 
-						<button className="clubbery_main_button hover_button_animation w-full py-3 text-lg" onClick={() => toggleModal("showAccountDeletionModal", true)}>
+						<Link href="/profile/delete-account" className="clubbery_main_button hover_button_animation w-full py-3 text-lg">
 							Konto entfernen
-						</button>
+						</Link>
 					</div>
 
 					<div className="w-full flex justify-center">
@@ -213,11 +193,6 @@ const User = () => {
 					</div>
 				</div>
 			</div>
-
-			{modalState.showChangePasswordModal && <ChangePasswordModal onClose={() => toggleModal("showChangePasswordModal", false)} />}
-			{modalState.showChangeEmailModal && <ChangeEmailModal onClose={() => toggleModal("showChangeEmailModal", false)} />}
-			{modalState.showChangeNameModal && <ChangeUserDisplayNameModal onClose={() => toggleModal("showChangeNameModal", false)} />}
-			{modalState.showAccountDeletionModal && <AccountDeletionModal onClose={() => toggleModal("showAccountDeletionModal", false)} />}
 		</>
 	);
 };
