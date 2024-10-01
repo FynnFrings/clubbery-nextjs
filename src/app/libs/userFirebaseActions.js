@@ -68,6 +68,45 @@ export const deleteEventFromUserFavorites = async (eventUID, user) => {
 	}
 };
 
+// Function to create a user in the database with additional fields
+export const createUserInDatabase = async (user) => {
+	try {
+		if (!user) {
+			throw new Error("User not authenticated");
+		}
+
+		const userUID = user.uid;
+		const userDocRef = doc(db, process.env.NEXT_PUBLIC_USER_DATABASE_NAME, userUID);
+
+		// Check if the user document already exists
+		const userDoc = await getDoc(userDocRef);
+
+		if (userDoc.exists()) {
+			// If user already exists, do nothing
+			console.log("User already exists in the database.");
+			return "user_exists";
+		} else {
+			// If user doesn't exist, create a new user document with default values
+			const createdAt = new Date();
+
+			await setDoc(userDocRef, {
+				uid: userUID,
+				email: user.email,
+				displayName: user.displayName || "",
+				createdAt: createdAt,
+				[process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME]: [],
+				[NEXT_PUBLIC_USER_DATABASE_PURCHASED_TICKTES]: [],
+			});
+
+			console.log("User created successfully in the database.");
+			return "success";
+		}
+	} catch (error) {
+		console.error("Error creating user in database:", error);
+		return error.message;
+	}
+};
+
 // Function to delete a user from the "users" document
 export const deleteUserFromDatabase = async (user) => {
 	try {

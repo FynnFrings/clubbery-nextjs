@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/app/hooks/useAuth";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
+import { deleteUserFromDatabase } from "@/app/libs/userFirebaseActions";
 
 const DeleteUserAccount = () => {
 	const { user, status } = useAuth();
@@ -44,7 +45,9 @@ const DeleteUserAccount = () => {
 			// Delete the user account
 			const deleteResponse = await deleteUserAccount();
 
-			if (deleteResponse === "success") {
+			const deleteResponseFirebase = await deleteUserFromDatabase(user);
+
+			if (deleteResponse === "success" && deleteResponseFirebase === "success") {
 				// Optionally, you can redirect or show a success message
 				setMessage("Konto erfolgreich gelöscht.");
 

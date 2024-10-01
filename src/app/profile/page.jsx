@@ -7,7 +7,7 @@ import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { userSignOut } from "../libs/getAuth";
 import { setUser } from "@/app/store/useSlice";
-import { getUserFromDatabase } from "../libs/userFirebaseActions";
+import { createUserInDatabase, getUserFromDatabase } from "../libs/userFirebaseActions";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorComponent from "@/components/ErrorComponent";
 import Link from "next/link";
@@ -50,6 +50,14 @@ const User = () => {
 
 	// Set user info to redux
 	useEffect(() => {
+		const createUser = async () => {
+			try {
+				await createUserInDatabase(user);
+			} catch (error) {
+				console.error("Error creating user in Firebase:", error);
+			}
+		};
+
 		if (user) {
 			const currentUser = {
 				displayName: user.displayName,
@@ -57,7 +65,10 @@ const User = () => {
 				emailVerified: user.emailVerified,
 				uid: user.uid,
 			};
+
 			dispatch(setUser(currentUser));
+
+			createUser();
 		}
 	}, [user, dispatch]);
 
@@ -159,7 +170,26 @@ const User = () => {
 							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
 							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
 								{/* Replace with dynamic content */}
-								<p className="text-lg">Du hast noch keine Tickets gekauft.</p>
+								{/* <p className="text-lg">Du hast noch keine Tickets gekauft.</p> */}
+								<div className="bg-[#262730] flex justify-between items-center rounded-lg shadow-lg p-4 text-white">
+									{/* Event Title */}
+									<div className="text-center mb-2">
+										<h2 className="text-lg font-semibold">Pablo&apos;s Party</h2>
+									</div>
+
+									{/* Time Information */}
+									<div className="flex items-center gap-x-2">
+										<p className="text-sm text-gray-300">5. Oktober 2024</p>
+										<p className="text-sm text-gray-300">22:00 Uhr</p>
+									</div>
+
+									{/* Show Ticket Button */}
+									<div className="text-center">
+										<Link href="ticket/123131231221" className="bg-[#CC7503] text-white px-5 py-2 rounded-lg hover:bg-orange-600 transition">
+											Ticket zeigen
+										</Link>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
