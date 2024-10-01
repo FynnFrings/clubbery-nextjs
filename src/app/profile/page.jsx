@@ -171,11 +171,10 @@ const User = () => {
 							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
 								{/* Replace with dynamic content */}
 								{/* <p className="text-lg">Du hast noch keine Tickets gekauft.</p> */}
-								<div className="bg-[#262730] flex justify-between items-center rounded-lg shadow-lg p-4 text-white">
+								<div className="bg-[#262730] flex flex-col gap-y-5 md:flex-row justify-between items-center rounded-lg shadow-lg p-4 text-white">
 									{/* Event Title */}
-									<div className="text-center mb-2">
-										<h2 className="text-lg font-semibold">Pablo&apos;s Party</h2>
-									</div>
+
+									<h2 className="text-lg font-semibold">Pablo&apos;s Party</h2>
 
 									{/* Time Information */}
 									<div className="flex items-center gap-x-2">
@@ -184,11 +183,9 @@ const User = () => {
 									</div>
 
 									{/* Show Ticket Button */}
-									<div className="text-center">
-										<Link href="ticket/123131231221" className="bg-[#CC7503] text-white px-5 py-2 rounded-lg hover:bg-orange-600 transition">
-											Ticket zeigen
-										</Link>
-									</div>
+									<Link href="ticket/123131231221" className="bg-[#CC7503] text-white px-5 py-2 rounded-lg hover:bg-orange-600 transition">
+										Ticket zeigen
+									</Link>
 								</div>
 							</div>
 						</div>
