@@ -153,9 +153,9 @@ const User = () => {
 									<ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 										{savedEvents.map((event) => (
 											<li key={event.itemId}>
-												<Link href={`/events/${event.itemId}`}>
-													<div style={{ backgroundImage: `url(${event.images[0].url}})` }} className="p-4 h-48 rounded-lg flex justify-center items-center bg-cover bg-center bg-blend-darken bg-[#0000004f] transition-transform duration-200 hover:scale-95">
-														<h3 className="text-lg font-semibold mb-2">{event.details.title}</h3>
+												<Link href={`/events/${event?.itemId}`}>
+													<div style={{ backgroundImage: `url(${event?.images[0]?.url}})` }} className="p-4 h-48 rounded-lg flex justify-center items-center bg-cover bg-center bg-blend-darken bg-[#0000004f] transition-transform duration-200 hover:scale-95">
+														<h3 className="text-lg font-semibold mb-2">{event?.details?.title}</h3>
 													</div>
 												</Link>
 											</li>
