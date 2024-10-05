@@ -12,6 +12,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorComponent from "@/components/ErrorComponent";
 import Link from "next/link";
 import loadable from "@loadable/component";
+import TicketProfile from "@/components/Ticket/TicketProfile";
 
 const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
 
@@ -31,6 +32,10 @@ const User = () => {
 	const [savedEventsUID, setSavedEventsUID] = useState([]);
 
 	const [savedEvents, setSavedEvents] = useState([]);
+
+	const [purchasedTickets, setPurchasedTickets] = useState([]);
+
+	const [purchasedTicketsOnly, setPurchasedTicketsOnly] = useState([]);
 
 	const [loadingEvents, setLoadingEvents] = useState(true);
 
@@ -122,6 +127,43 @@ const User = () => {
 		fetchSavedEvents();
 	}, [savedEventsUID, GET_EVENT_BY_ID]);
 
+	// Fetch saved event details
+	useEffect(() => {
+		const fetchPuchasedTickets = async () => {
+			if (user && savedEvents) {
+				console.log("🚀 ~ fetchSavedEvents ~ user:", user.uid);
+				try {
+					//GET_ALL_TICKETS_BY_ID
+					const purchasedTickets = await axios.post(`https://getpurchasesbyuserid-qh42lmu4jq-uc.a.run.app`, { id: user.uid });
+
+					if (!purchasedTickets || purchasedTickets.data.length <= 0) return;
+
+					console.log("🚀 ~ purchasedTickets.data.forEach ~ savedEvents:", savedEvents);
+					purchasedTickets.data.forEach((ticketObjekt) => {
+						const eventToTicketrelation = savedEvents.find((event) => event.id === ticketObjekt.eventId);
+						if (eventToTicketrelation) {
+							ticketObjekt.eventData = { ...eventToTicketrelation };
+						}
+					});
+
+					console.log("🚀 ~ fetchPuchasedTickets ~ purchasedTickets:", purchasedTickets.data);
+
+					setPurchasedTickets(purchasedTickets.data);
+
+					const onlyTicketItems = purchasedTickets.data.map((ticketObjekt) => ticketObjekt.items).flat();
+
+					if (!onlyTicketItems || onlyTicketItems.length <= 0) return;
+					console.log("🚀 ~ fetchPuchasedTickets ~ onlyTicketItems:", onlyTicketItems);
+					setPurchasedTicketsOnly(onlyTicketItems);
+				} catch (error) {
+					console.error("Error fetching purchased tickets:", error);
+				}
+			}
+		};
+
+		fetchPuchasedTickets();
+	}, [user, savedEvents]);
+
 	useEffect(() => {
 		if (!user && status === "unauthenthicated") {
 			router.push("/auth/signin");
@@ -164,31 +206,16 @@ const User = () => {
 								)}
 							</div>
 						</div>
+						<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
 
 						{/* Purchased Tickets Section */}
-						<div>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
-							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
-								{/* Replace with dynamic content */}
-								{/* <p className="text-lg">Du hast noch keine Tickets gekauft.</p> */}
-								<div className="bg-[#262730] flex flex-col gap-y-5 md:flex-row justify-between items-center rounded-lg shadow-lg p-4 text-white">
-									{/* Event Title */}
-
-									<h2 className="text-lg font-semibold">Pablo&apos;s Party</h2>
-
-									{/* Time Information */}
-									<div className="flex items-center gap-x-2">
-										<p className="text-sm text-gray-300">5. Oktober 2024</p>
-										<p className="text-sm text-gray-300">22:00 Uhr</p>
-									</div>
-
-									{/* Show Ticket Button */}
-									<Link href="ticket/123131231221" className="bg-[#CC7503] text-white px-5 py-2 rounded-lg hover:bg-orange-600 transition">
-										Ticket zeigen
-									</Link>
-								</div>
-							</div>
-						</div>
+						{purchasedTicketsOnly && purchasedTicketsOnly.length > 0 && (
+							<ul className="flex flex-col gap-y-5 bg-white bg-opacity-10 p-4 rounded-lg">
+								{/* {purchasedTicketsOnly.map((ticket) => (
+									// <TicketProfile key={ticket.id} />
+								))} */}
+							</ul>
+						)}
 					</div>
 
 					<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">

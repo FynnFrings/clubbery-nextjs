@@ -95,7 +95,6 @@ export const createUserInDatabase = async (user) => {
 				displayName: user.displayName || "",
 				createdAt: createdAt,
 				[process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME]: [],
-				[NEXT_PUBLIC_USER_DATABASE_PURCHASED_TICKTES]: [],
 			});
 
 			console.log("User created successfully in the database.");

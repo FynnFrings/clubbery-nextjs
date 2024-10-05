@@ -3,7 +3,6 @@ import { signInWithRedirect, updateEmail, verifyBeforeUpdateEmail, GoogleAuthPro
 import { auth } from "../firebase";
 
 const googleProvider = new GoogleAuthProvider();
-const appleProvider = new OAuthProvider("apple.com");
 
 // Function to handle Google Sign-In with Redirect
 export const signInWithGoogle = async () => {
@@ -12,6 +11,10 @@ export const signInWithGoogle = async () => {
 
 // Function to handle Apple Sign-In with Redirect
 export const signInWithApple = () => {
+	const appleProvider = new OAuthProvider("apple.com");
+
+	console.log("🚀 ~ appleProvider:", appleProvider);
+
 	appleProvider.addScope("email");
 	appleProvider.addScope("name");
 
