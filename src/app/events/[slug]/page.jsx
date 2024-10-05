@@ -197,10 +197,6 @@ const EventDetailsPage = ({ params }) => {
 						{isEventSaved ? <FaBookmark className="mr-1" size={27} /> : <FaRegBookmark className="mr-1" size={27} />}
 						{isEventSaved ? "Gespeichert" : "Merken"}
 					</button>
-					{/* {alert && <BusinessMerkenResponseMessage />} */}
-					<button onClick={handleShowBanner} className="border border-white text-white transition-all active:scale-95 hover:bg-white hover:bg-opacity-10 w-full md:w-auto text-center py-2 px-4 rounded-md">
-						Kontaktieren
-					</button>
 				</div>
 			</div>
 
