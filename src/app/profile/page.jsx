@@ -13,6 +13,7 @@ import ErrorComponent from "@/components/ErrorComponent";
 import Link from "next/link";
 import loadable from "@loadable/component";
 import TicketProfile from "@/components/Ticket/TicketProfile";
+import EventProfile from "@/components/Event/EventProfile";
 
 const ConfirmationEmail = loadable(() => import("@/components/Auth/ConfirmationEmail"));
 
@@ -20,6 +21,8 @@ const User = () => {
 	const SAVED_EVENTS_DOCUMENT_NAME = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
 
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
+
+	const NEXT_PUBLIC_GET_ALL_TICKETS = process.env.NEXT_PUBLIC_GET_ALL_TICKETS;
 
 	const { user, status } = useAuth();
 
@@ -35,11 +38,13 @@ const User = () => {
 
 	const [purchasedTickets, setPurchasedTickets] = useState([]);
 
-	const [purchasedTicketsOnly, setPurchasedTicketsOnly] = useState([]);
-
 	const [loadingEvents, setLoadingEvents] = useState(true);
 
-	const [errorFetchingEvents, setErrorFetchingEvents] = useState(false); // New error state
+	const [errorFetchingEvents, setErrorFetchingEvents] = useState(false);
+
+	const [loadingTickets, setLoadingTickets] = useState(true);
+
+	const [errorFetchingTickets, setErrorFetchingTickets] = useState(false);
 
 	const handleSignOut = async () => {
 		try {
@@ -119,7 +124,6 @@ const User = () => {
 					setLoadingEvents(false);
 				}
 			} else {
-				setSavedEvents([]);
 				setLoadingEvents(false);
 			}
 		};
@@ -131,14 +135,15 @@ const User = () => {
 	useEffect(() => {
 		const fetchPuchasedTickets = async () => {
 			if (user && savedEvents) {
-				console.log("🚀 ~ fetchSavedEvents ~ user:", user.uid);
 				try {
+					setLoadingTickets(true);
+
+					setErrorFetchingTickets(false);
 					//GET_ALL_TICKETS_BY_ID
-					const purchasedTickets = await axios.post(`https://getpurchasesbyuserid-qh42lmu4jq-uc.a.run.app`, { id: user.uid });
+					const purchasedTickets = await axios.post(NEXT_PUBLIC_GET_ALL_TICKETS, { id: user.uid });
 
 					if (!purchasedTickets || purchasedTickets.data.length <= 0) return;
 
-					console.log("🚀 ~ purchasedTickets.data.forEach ~ savedEvents:", savedEvents);
 					purchasedTickets.data.forEach((ticketObjekt) => {
 						const eventToTicketrelation = savedEvents.find((event) => event.id === ticketObjekt.eventId);
 						if (eventToTicketrelation) {
@@ -146,29 +151,26 @@ const User = () => {
 						}
 					});
 
-					console.log("🚀 ~ fetchPuchasedTickets ~ purchasedTickets:", purchasedTickets.data);
-
 					setPurchasedTickets(purchasedTickets.data);
-
-					const onlyTicketItems = purchasedTickets.data.map((ticketObjekt) => ticketObjekt.items).flat();
-
-					if (!onlyTicketItems || onlyTicketItems.length <= 0) return;
-					console.log("🚀 ~ fetchPuchasedTickets ~ onlyTicketItems:", onlyTicketItems);
-					setPurchasedTicketsOnly(onlyTicketItems);
 				} catch (error) {
+					setErrorFetchingTickets(true);
 					console.error("Error fetching purchased tickets:", error);
+				} finally {
+					setLoadingTickets(false);
 				}
+			} else {
+				setLoadingTickets(false);
 			}
 		};
 
 		fetchPuchasedTickets();
-	}, [user, savedEvents]);
+	}, [user, savedEvents, NEXT_PUBLIC_GET_ALL_TICKETS]);
 
 	useEffect(() => {
-		if (!user && status === "unauthenthicated") {
+		if (status === "unauthenthicated") {
 			router.push("/auth/signin");
 		}
-	}, [user, router, status]);
+	}, [router, status]);
 
 	if (status === "loading") return <LoadingSpinner />;
 	if (status === "authenticated" && user && !user.emailVerified) return <ConfirmationEmail />;
@@ -183,38 +185,37 @@ const User = () => {
 				</div>
 
 				<div className="w-full max-w-4xl flex flex-col gap-6">
-					<div className="w-full max-w-4xl flex flex-col gap-8 mt-8">
+					<div className="w-full max-w-4xl flex flex-col gap-8 my-8">
 						{/* Favorite Events Section */}
-						<div>
-							<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gespeicherte Events</h2>
-							<div className="bg-white bg-opacity-10 p-4 rounded-lg">
-								{loadingEvents && <p className="text-lg">Wird aktualisiert...</p>}
-								{errorFetchingEvents && <p>Ein Fehler ist aufgetreten. Versuchen Sie später nochmal.</p>}
-								{!loadingEvents && !errorFetchingEvents && savedEvents.length === 0 && <p className="text-lg">Du hast noch keine Events gespeichert.</p>}
-								{savedEvents.length > 0 && (
-									<ul className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-										{savedEvents.map((event) => (
-											<li key={event.itemId}>
-												<Link href={`/events/${event.itemId}`}>
-													<div style={{ backgroundImage: `url(${event.images[0].url}})` }} className="p-4 h-48 rounded-lg flex justify-center items-center bg-cover bg-center bg-blend-darken bg-[#0000004f] transition-transform duration-200 hover:scale-95">
-														<h3 className="text-lg font-semibold mb-2">{event.details.title}</h3>
-													</div>
-												</Link>
-											</li>
-										))}
-									</ul>
-								)}
-							</div>
+						<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gespeicherte Events</h2>
+						<div className="bg-white bg-opacity-10 p-4 rounded-lg">
+							{loadingEvents && <p className="text-lg">Wird aktualisiert...</p>}
+							{errorFetchingEvents && <p>Ein Fehler ist aufgetreten. Versuchen Sie später nochmal.</p>}
+							{!loadingEvents && !errorFetchingEvents && savedEvents.length === 0 && <p className="text-lg">Du hast noch keine Events gespeichert.</p>}
+							{savedEvents.length > 0 && (
+								<div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+									{savedEvents.map((event) => (
+										<EventProfile key={event.itemId} event={event} />
+									))}
+								</div>
+							)}
 						</div>
 						<h2 className="text-2xl md:text-3xl font-semibold mb-4">Gekaufte Tickets</h2>
 
 						{/* Purchased Tickets Section */}
-						{purchasedTicketsOnly && purchasedTicketsOnly.length > 0 && (
-							<ul className="flex flex-col gap-y-5 bg-white bg-opacity-10 p-4 rounded-lg">
-								{/* {purchasedTicketsOnly.map((ticket) => (
-									// <TicketProfile key={ticket.id} />
-								))} */}
-							</ul>
+						<div className="flex flex-col gap-y-5 bg-white bg-opacity-10 p-4 rounded-lg">
+							{loadingTickets && <p className="text-lg">Wird aktualisiert...</p>}
+							{errorFetchingTickets && <p>Ein Fehler ist aufgetreten. Versuchen Sie später nochmal.</p>}
+							{!loadingTickets && !errorFetchingTickets && purchasedTickets.length <= 0 && <p>Du hast noch keine Tickets gekauft.</p>}
+							{purchasedTickets.length > 0 &&
+								purchasedTickets.slice(0, 5).map((ticketObject) => {
+									return <TicketProfile key={ticketObject.id} ticketId={ticketObject.id} ticketObject={ticketObject} />;
+								})}
+						</div>
+						{purchasedTickets.length > 4 && (
+							<Link href={"/tickets"} className="clubbery_main_button hover_button_animation w-full py-3 text-lg">
+								Weitere {purchasedTickets.length - 5} Tickets
+							</Link>
 						)}
 					</div>
 

@@ -11,7 +11,7 @@ const TicketCard = ({ ticketObject }) => {
 
 				<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
 					<p className="text-base md:text-lg font-medium">
-						Preis: <span>{ticketInfo.ticket.price} €</span>
+						Preis: <span>{(ticketInfo.ticket.price / 1000).toFixed(2)} €</span>
 					</p>
 					<p className="text-base md:text-lg font-medium">
 						Anzahl: <span>{ticketInfo.ticketAmount}</span>

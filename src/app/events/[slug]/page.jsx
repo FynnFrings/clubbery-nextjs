@@ -18,17 +18,19 @@ import InteractiveMap from "@/components/InteractiveMap";
 import { useDispatch, useSelector } from "react-redux";
 import { setSavedTickets } from "@/app/store/useSlice";
 
-const ComingSoonBanner = loadable(() => import("@/components/ComingSoonBanner"));
 const ErrorComponent = loadable(() => import("@/components/ErrorComponent"));
 const EventTicket = loadable(() => import("@/components/Event/EventTicket"));
 const ContactResponseMessage = loadable(() => import("@/components/ContactResponseMessage"));
 
 const EventDetailsPage = ({ params }) => {
 	const { user } = useAuth();
+
 	const dispatch = useDispatch();
+
 	const savedTickets = useSelector((state) => state.auth.savedTickets);
 
 	const GET_EVENT_BY_ID = process.env.NEXT_PUBLIC_GET_EVENT_BY_ID;
+
 	const savedEventsDocumentName = process.env.NEXT_PUBLIC_USER_DATABASE_EVENTS_NAME;
 
 	// Fetch event details using SWR
@@ -57,8 +59,6 @@ const EventDetailsPage = ({ params }) => {
 
 	const totalAmountOfTickets = useMemo(() => ticketList && calculateTotalAmount(ticketList), [ticketList, calculateTotalAmount]);
 
-	const [showBanner, setShowBanner] = useState(false);
-
 	const [message, setMessage] = useState("");
 
 	const [errorResponse, setErrorResponse] = useState(false);
@@ -68,12 +68,6 @@ const EventDetailsPage = ({ params }) => {
 	const [isEventSaved, setIsEventSaved] = useState(false);
 
 	const [ticketAmounts, setTicketAmounts] = useState(savedTickets && Object.values(savedTickets).length > 0 ? savedTickets : {});
-
-	// Show/hide the banner
-	const handleShowBanner = () => !showBanner && setShowBanner(true);
-	useEffect(() => {
-		showBanner && setTimeout(() => setShowBanner(false), 4000);
-	}, [showBanner]);
 
 	// Ticket amount change handler, memoized with useCallback
 	const handleTicketAmountChange = useCallback(
@@ -305,7 +299,6 @@ const EventDetailsPage = ({ params }) => {
 					</div>
 				</div>
 			</div>
-			{showBanner && <ComingSoonBanner />}
 
 			{(errorResponse || successResponse) && <ContactResponseMessage fill={errorResponse ? "bg-red-300" : "bg-[#e5bf8d]"} background={errorResponse ? "bg-red-500" : "bg-[#CC7503]"} response={message} />}
 		</>

@@ -1,4 +1,6 @@
 const convertLongDateToShortDate = (dateStr) => {
+	if (!dateStr) return;
+
 	const [day, month, year] = dateStr.split(".");
 
 	const date = new Date(year, month - 1, day);

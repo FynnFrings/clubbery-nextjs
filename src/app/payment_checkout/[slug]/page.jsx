@@ -28,6 +28,8 @@ const PaymentCheckout = ({ params }) => {
 		message: "",
 	});
 
+	const [proceedPayment, setProceedPayment] = useState(false);
+
 	// Memoize filteredTickets to avoid recalculations on each render
 	const filteredTickets = useMemo(() => {
 		return allSavedTickets && Object.values(allSavedTickets).length > 0
@@ -82,6 +84,8 @@ const PaymentCheckout = ({ params }) => {
 		async (event) => {
 			event.preventDefault();
 			try {
+				setProceedPayment(true);
+
 				const response = await userBuyTicketFirstAPICall(user.email, user.uid, params.slug, onlyTicketObjects);
 
 				if (response.status === 200) {
@@ -98,6 +102,8 @@ const PaymentCheckout = ({ params }) => {
 					message: "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
 				});
 				console.error("Error during the POST request:", error);
+			} finally {
+				setProceedPayment(false);
 			}
 		},
 		[user, params.slug, onlyTicketObjects, router]
@@ -130,7 +136,7 @@ const PaymentCheckout = ({ params }) => {
 		setIsMounted(true);
 	}, []);
 
-	if (!isMounted) return <LoadingSpinner />;
+	if (!isMounted || proceedPayment) return <LoadingSpinner />;
 
 	return (
 		<>
@@ -151,7 +157,7 @@ const PaymentCheckout = ({ params }) => {
 				{filteredTickets.length > 0 && (
 					<div className="mt-10 w-full flex justify-center">
 						<button onClick={handleBuyTickets} className="clubbery_main_button hover_button_animation w-full md:w-1/3 py-3 text-lg">
-							Kaufen für {allTicketsFullPrice} &euro;
+							Kaufen für {(allTicketsFullPrice / 1000).toFixed(2)} &euro;
 						</button>
 					</div>
 				)}

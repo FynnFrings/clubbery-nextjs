@@ -1,4 +1,6 @@
 const convertUnixDateToFullDate = (unixData) => {
+	if (!unixData || Object.values(unixData).length <= 0) return;
+
 	const { startDate, endDate } = unixData;
 
 	const fullStartDate = new Date(startDate._seconds * 1000 + startDate._nanoseconds / 1000000);

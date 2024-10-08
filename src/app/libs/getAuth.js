@@ -13,8 +13,6 @@ export const signInWithGoogle = async () => {
 export const signInWithApple = () => {
 	const appleProvider = new OAuthProvider("apple.com");
 
-	console.log("🚀 ~ appleProvider:", appleProvider);
-
 	appleProvider.addScope("email");
 	appleProvider.addScope("name");
 
