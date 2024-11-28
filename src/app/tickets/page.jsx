@@ -70,6 +70,8 @@ const Tickets = () => {
 
 					const purchasedTickets = await axios.post(NEXT_PUBLIC_GET_ALL_TICKETS, { id: user.uid });
 
+					console.log(purchasedTickets);
+
 					if (!purchasedTickets || purchasedTickets.data.length <= 0) return;
 
 					const ticketsWithEventData = purchasedTickets.data.map((ticketObjekt) => {
